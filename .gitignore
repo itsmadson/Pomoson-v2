@@ -1,0 +1,11 @@
+# Ignore node modules
+node_modules/
+
+# Ignore public build output
+public/build/
+
+# Ignore specific Supabase config file
+src/lib/supabase.js
+
+# Ignore package lock file
+package-lock.json
