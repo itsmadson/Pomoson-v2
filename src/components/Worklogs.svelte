@@ -10,6 +10,11 @@
     let newWorklog = { title: '', description: '', duration: 30 };
     let isAddingWorklog = false;
 
+    // Edit worklog state
+    let editingWorklog = null;
+    let editWorklog = { title: '', description: '', duration: 30 };
+    let isEditingWorklog = false;
+
     // Jira integration state
     let showJiraConfig = false;
     let jiraConfig = { baseUrl: '', token: '' };
@@ -18,6 +23,12 @@
     let showSuggestions = false;
     let searchTimeout;
     let pushingToJira = {};
+
+    // Edit search state
+    let editSearchSuggestions = [];
+    let showEditSuggestions = false;
+    let editSearchTimeout;
+    let isEditSearching = false;
 
     $: if (jiraConfig?.baseUrl && window.electron?.sendOrigin) {
         try {
@@ -28,8 +39,6 @@
             console.error('Invalid Jira URL:', jiraConfig.baseUrl)
         }
     }
-
-
 
     // Load Jira config from localStorage
     function loadJiraConfig() {
@@ -74,14 +83,23 @@
     }
 
     // Search Jira issues
-    async function searchJiraIssues(query) {
+    async function searchJiraIssues(query, isEdit = false) {
         if (!isJiraConfigured() || !query.trim()) {
-            searchSuggestions = [];
+            if (isEdit) {
+                editSearchSuggestions = [];
+            } else {
+                searchSuggestions = [];
+            }
             return;
         }
 
         try {
-            isSearching = true;
+            if (isEdit) {
+                isEditSearching = true;
+            } else {
+                isSearching = true;
+            }
+
             const trimmedQuery = query.trim();
             let url;
 
@@ -107,14 +125,14 @@
             }
 
             const data = await response.json();
+            let suggestions = [];
 
             if (looksLikeIssueKey(trimmedQuery)) {
                 // Handle issue picker response
-                searchSuggestions = [];
                 if (data.sections) {
                     data.sections.forEach(section => {
                         if (section.issues) {
-                            searchSuggestions.push(...section.issues.map(issue => ({
+                            suggestions.push(...section.issues.map(issue => ({
                                 key: issue.key,
                                 summary: issue.summaryText || issue.summary
                             })));
@@ -123,19 +141,34 @@
                 }
             } else {
                 // Handle search response
-                searchSuggestions = data.issues ? data.issues.map(issue => ({
+                suggestions = data.issues ? data.issues.map(issue => ({
                     key: issue.key,
                     summary: issue.fields.summary
                 })) : [];
             }
 
-            showSuggestions = searchSuggestions.length > 0;
+            if (isEdit) {
+                editSearchSuggestions = suggestions;
+                showEditSuggestions = suggestions.length > 0;
+            } else {
+                searchSuggestions = suggestions;
+                showSuggestions = suggestions.length > 0;
+            }
         } catch (err) {
             console.error('Jira search error:', err);
-            searchSuggestions = [];
-            showSuggestions = false;
+            if (isEdit) {
+                editSearchSuggestions = [];
+                showEditSuggestions = false;
+            } else {
+                searchSuggestions = [];
+                showSuggestions = false;
+            }
         } finally {
-            isSearching = false;
+            if (isEdit) {
+                isEditSearching = false;
+            } else {
+                isSearching = false;
+            }
         }
     }
 
@@ -162,6 +195,29 @@
         }, 300);
     }
 
+    // Handle edit title input with debounced search
+    function handleEditTitleInput(event) {
+        const value = event.target.value;
+        editWorklog.title = value;
+
+        // Clear previous timeout
+        if (editSearchTimeout) {
+            clearTimeout(editSearchTimeout);
+        }
+
+        // Don't search for very short inputs
+        if (value.length < 2) {
+            editSearchSuggestions = [];
+            showEditSuggestions = false;
+            return;
+        }
+
+        // Debounce search
+        editSearchTimeout = setTimeout(() => {
+            searchJiraIssues(value, true);
+        }, 300);
+    }
+
     // Select suggestion
     function selectSuggestion(suggestion) {
         newWorklog.title = suggestion.key;
@@ -169,10 +225,24 @@
         showSuggestions = false;
     }
 
+    // Select edit suggestion
+    function selectEditSuggestion(suggestion) {
+        editWorklog.title = suggestion.key;
+        editSearchSuggestions = [];
+        showEditSuggestions = false;
+    }
+
     // Hide suggestions when clicking outside
     function hideSuggestions() {
         setTimeout(() => {
             showSuggestions = false;
+        }, 200);
+    }
+
+    // Hide edit suggestions when clicking outside
+    function hideEditSuggestions() {
+        setTimeout(() => {
+            showEditSuggestions = false;
         }, 200);
     }
 
@@ -191,9 +261,13 @@
         try {
             pushingToJira[worklog.id] = true;
 
-            // Convert duration from seconds to seconds (it's already in seconds in DB)
-            // Convert start_time to Jira format
-            const startTime = new Date(worklog.start_time).toISOString().replace('Z', '+0000');
+            // Use the selected date from the form instead of the database created date
+            const worklogDate = new Date(selectedDate);
+            // Set time to match the worklog start time but on the selected date
+            const originalStartTime = new Date(worklog.start_time);
+            worklogDate.setHours(originalStartTime.getHours(), originalStartTime.getMinutes(), originalStartTime.getSeconds());
+
+            const startTime = worklogDate.toISOString().replace('Z', '+0000');
 
             const jiraWorklog = {
                 comment: worklog.description || worklog.title,
@@ -224,12 +298,93 @@
                 throw new Error(`Jira API error: ${response.status} - ${errorText}`);
             }
 
-            showNotification(`✅ Pushed to Jira: ${worklog.title}`);
+            showNotification(`✅ Pushed to Jira: ${worklog.title} (${selectedDate})`);
         } catch (err) {
             console.error('Error pushing to Jira:', err);
             showError(`Failed to push to Jira: ${err.message}`);
         } finally {
             pushingToJira[worklog.id] = false;
+        }
+    }
+
+    // Start editing worklog
+    function startEditWorklog(worklog) {
+        editingWorklog = worklog.id;
+        editWorklog = {
+            title: worklog.title,
+            description: worklog.description || '',
+            duration: Math.round(worklog.duration / 60) // Convert seconds to minutes
+        };
+        // Clear search suggestions
+        editSearchSuggestions = [];
+        showEditSuggestions = false;
+    }
+
+    // Cancel editing
+    function cancelEditWorklog() {
+        editingWorklog = null;
+        editWorklog = { title: '', description: '', duration: 30 };
+        editSearchSuggestions = [];
+        showEditSuggestions = false;
+    }
+
+    // Save edited worklog
+    async function saveEditWorklog() {
+        if (!editWorklog.title.trim()) {
+            showError('Please enter a title');
+            return;
+        }
+
+        if (editWorklog.duration < 1 || editWorklog.duration > 480) {
+            showError('Duration must be between 1 and 480 minutes');
+            return;
+        }
+
+        try {
+            isEditingWorklog = true;
+            const user = await getCurrentUser();
+            if (!user) return;
+
+            const originalWorklog = worklogs.find(w => w.id === editingWorklog);
+            if (!originalWorklog) return;
+
+            // Calculate new start and end times based on duration
+            const originalEndTime = new Date(originalWorklog.end_time);
+            const newStartTime = new Date(originalEndTime);
+            newStartTime.setMinutes(newStartTime.getMinutes() - editWorklog.duration);
+
+            const { data, error } = await supabase
+                .from('worklogs')
+                .update({
+                    title: editWorklog.title.trim(),
+                    description: editWorklog.description.trim(),
+                    duration: editWorklog.duration * 60, // Convert to seconds
+                    start_time: newStartTime.toISOString()
+                })
+                .eq('id', editingWorklog)
+                .eq('user_id', user.id)
+                .select();
+
+            if (error) throw error;
+
+            if (data && data[0]) {
+                // Update the worklog in the list
+                const worklogIndex = worklogs.findIndex(w => w.id === editingWorklog);
+                if (worklogIndex !== -1) {
+                    // Update total duration
+                    totalDuration = totalDuration - originalWorklog.duration + data[0].duration;
+                    worklogs[worklogIndex] = data[0];
+                    worklogs = [...worklogs]; // Trigger reactivity
+                }
+            }
+
+            cancelEditWorklog();
+            showNotification('✅ Worklog updated successfully!');
+        } catch (err) {
+            console.error('Error updating worklog:', err);
+            showError('Failed to update worklog');
+        } finally {
+            isEditingWorklog = false;
         }
     }
 
@@ -327,6 +482,12 @@
             }
 
             worklogs = worklogs.filter(w => w.id !== id);
+
+            // Cancel edit if we're editing the deleted worklog
+            if (editingWorklog === id) {
+                cancelEditWorklog();
+            }
+
             showNotification('🗑️ Worklog deleted');
         } catch (err) {
             console.error('Error deleting worklog:', err);
@@ -480,39 +641,117 @@
         <div class="worklogs-list">
             {#each worklogs as log (log.id)}
                 <div class="worklog-item">
-                    <div class="worklog-main">
-                        <div class="worklog-time">
-                            {formatTime(log.start_time)} - {formatTime(log.end_time)}
+                    {#if editingWorklog === log.id}
+                        <!-- Edit Mode -->
+                        <div class="worklog-edit">
+                            <div class="edit-form">
+                                <div class="title-input-container">
+                                    <input
+                                            bind:value={editWorklog.title}
+                                            on:input={handleEditTitleInput}
+                                            on:blur={hideEditSuggestions}
+                                            placeholder="Issue key (SUP-165) or description..."
+                                            class="worklog-input"
+                                            disabled={isEditingWorklog}
+                                            maxlength="200"
+                                    >
+                                    {#if isEditSearching}
+                                        <div class="search-indicator">🔍</div>
+                                    {/if}
+                                    {#if showEditSuggestions && editSearchSuggestions.length > 0}
+                                        <div class="suggestions-dropdown">
+                                            {#each editSearchSuggestions as suggestion}
+                                                <div
+                                                        class="suggestion-item"
+                                                        on:mousedown={() => selectEditSuggestion(suggestion)}
+                                                >
+                                                    <strong>{suggestion.key}</strong> — {suggestion.summary}
+                                                </div>
+                                            {/each}
+                                        </div>
+                                    {/if}
+                                </div>
+                                <textarea
+                                        bind:value={editWorklog.description}
+                                        placeholder="Details (optional)..."
+                                        class="worklog-textarea"
+                                        disabled={isEditingWorklog}
+                                        maxlength="500"
+                                ></textarea>
+                                <div class="duration-row">
+                                    <div class="duration-input">
+                                        <label>Duration (minutes)</label>
+                                        <input
+                                                type="number"
+                                                bind:value={editWorklog.duration}
+                                                min="1"
+                                                max="480"
+                                                class="duration-field"
+                                                disabled={isEditingWorklog}
+                                        >
+                                    </div>
+                                    <div class="edit-actions">
+                                        <button
+                                                on:click={cancelEditWorklog}
+                                                class="cancel-btn"
+                                                disabled={isEditingWorklog}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                                on:click={saveEditWorklog}
+                                                class="save-btn"
+                                                disabled={isEditingWorklog || !editWorklog.title.trim()}
+                                        >
+                                            {isEditingWorklog ? 'Saving...' : 'Save'}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <h4 class="worklog-title">
-                            {log.title}
-                            {#if looksLikeIssueKey(log.title)}
-                                <span class="jira-badge">JIRA</span>
+                    {:else}
+                        <!-- View Mode -->
+                        <div class="worklog-main">
+                            <div class="worklog-time">
+                                {formatTime(log.start_time)} - {formatTime(log.end_time)}
+                            </div>
+                            <h4 class="worklog-title">
+                                {log.title}
+                                {#if looksLikeIssueKey(log.title)}
+                                    <span class="jira-badge">JIRA</span>
+                                {/if}
+                            </h4>
+                            {#if log.description}
+                                <p class="worklog-desc">{log.description}</p>
                             {/if}
-                        </h4>
-                        {#if log.description}
-                            <p class="worklog-desc">{log.description}</p>
-                        {/if}
-                    </div>
-                    <div class="worklog-meta">
-                        <div class="worklog-duration">
-                            {formatDuration(log.duration)}
                         </div>
-                        <div class="worklog-actions">
-                            {#if looksLikeIssueKey(log.title) && isJiraConfigured()}
+                        <div class="worklog-meta">
+                            <div class="worklog-duration">
+                                {formatDuration(log.duration)}
+                            </div>
+                            <div class="worklog-actions">
                                 <button
-                                        on:click={() => pushToJira(log)}
-                                        class="jira-btn"
-                                        disabled={pushingToJira[log.id]}
+                                        on:click={() => startEditWorklog(log)}
+                                        class="edit-btn"
+                                        title="Edit worklog"
                                 >
-                                    {pushingToJira[log.id] ? '⏳' : '🚀'} Jira
+                                    ✏️
                                 </button>
-                            {/if}
-                            <button on:click={() => deleteWorklog(log.id)} class="delete-btn">
-                                🗑️
-                            </button>
+                                {#if looksLikeIssueKey(log.title) && isJiraConfigured()}
+                                    <button
+                                            on:click={() => pushToJira(log)}
+                                            class="jira-btn"
+                                            disabled={pushingToJira[log.id]}
+                                    >
+                                        {pushingToJira[log.id] ? '⏳' : '🚀'} Jira
+                                    </button>
+                                {/if}
+                                <button on:click={() => deleteWorklog(log.id)} class="delete-btn">
+                                    🗑️
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    {/if}
                 </div>
             {/each}
         </div>
@@ -555,6 +794,7 @@
         </div>
     </div>
 {/if}
+
 
 <style>
     .worklogs-container {
@@ -1147,6 +1387,117 @@
         }
 
         .config-actions {
+            flex-direction: column;
+        }
+
+        .cancel-btn, .save-btn {
+            width: 100%;
+        }
+    }
+
+    .worklog-edit {
+        width: 100%;
+    }
+
+    .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%;
+    }
+
+    .edit-actions {
+        display: flex;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+    .save-btn {
+        padding: 12px 20px;
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--neon-purple);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        font-size: 15px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .save-btn:hover:not(:disabled) {
+        background: rgba(139, 92, 246, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .save-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .cancel-btn {
+        padding: 12px 20px;
+        background: transparent;
+        border: 1px solid var(--glass-border);
+        color: var(--text-primary);
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 15px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .cancel-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .edit-btn {
+        background: none;
+        border: none;
+        color: var(--neon-blue);
+        cursor: pointer;
+        font-size: 20px;
+        opacity: 0.7;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 4px;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .edit-btn:hover {
+        opacity: 1;
+        background: rgba(0, 212, 255, 0.1);
+    }
+
+
+    @media (max-width: 768px) {
+        .edit-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .worklog-edit .duration-row {
+            flex-direction: column;
+        }
+
+        .worklog-edit .edit-actions {
+            flex-direction: row;
+            margin-top: 8px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .edit-actions {
             flex-direction: column;
         }
 
