@@ -184,13 +184,13 @@
 
         <div class="timer-controls">
             <button on:click={startTimer} disabled={state.isActive} class="control-btn">
-                ▶️ Start Brewing
+                ► Start
             </button>
             <button on:click={stopTimer} disabled={!state.isActive} class="control-btn">
-                ⏸️ Pause
+                ◼ Pause
             </button>
             <button on:click={resetTimer} class="control-btn">
-                🔄 Fresh Cup
+                ↻ Reset
             </button>
         </div>
 
@@ -208,7 +208,7 @@
     </div>
 
     <div class="settings-section">
-        <h3>⚙️ Brew Settings</h3>
+        <h3>⚙ Timer Settings</h3>
 
         <div class="setting-group">
             <label class="setting-label">
@@ -270,28 +270,41 @@
     .pomodoro-container {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 20px;
         max-width: 900px;
         margin: 0 auto;
     }
 
     .timer-section {
-        background: rgba(26, 15, 10, 0.6);
+        background: var(--panel-bg);
         backdrop-filter: blur(10px);
-        border-radius: 20px;
+        border-radius: 0;
         padding: 30px;
         text-align: center;
-        border: 1px solid rgba(139, 69, 19, 0.3);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--neon-blue);
+        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .timer-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
     }
 
     .timer-display {
-        font-size: 5rem;
+        font-size: 4.5rem;
         font-weight: bold;
         font-family: 'Courier New', monospace;
-        color: var(--coffee-cream);
+        color: var(--neon-blue);
         margin: 20px 0;
         position: relative;
+        text-shadow: 0 0 10px var(--neon-blue);
     }
 
     .timer-status {
@@ -300,21 +313,26 @@
 
     .status-badge {
         padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 600;
+        border-radius: 0;
+        font-weight: bold;
         font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        display: inline-block;
     }
 
     .status-badge.work {
-        background: rgba(210, 180, 140, 0.2);
-        color: var(--coffee-cream);
-        border: 1px solid var(--coffee-cream);
+        background: rgba(0, 255, 252, 0.1);
+        color: var(--neon-blue);
+        border: 1px solid var(--neon-blue);
+        box-shadow: 0 0 10px rgba(0, 255, 252, 0.3);
     }
 
     .status-badge.break {
-        background: rgba(139, 69, 19, 0.3);
-        color: var(--coffee-accent);
-        border: 1px solid var(--coffee-accent);
+        background: rgba(188, 19, 254, 0.1);
+        color: var(--neon-pink);
+        border: 1px solid var(--neon-pink);
+        box-shadow: 0 0 10px rgba(188, 19, 254, 0.3);
     }
 
     .timer-controls {
@@ -327,34 +345,42 @@
 
     .control-btn {
         padding: 12px 24px;
-        border: none;
-        border-radius: 10px;
+        border: 1px solid var(--neon-blue);
+        border-radius: 0;
         font-size: 1rem;
-        font-weight: 600;
+        font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease;
-        background: linear-gradient(135deg, rgba(139, 69, 19, 0.8) 0%, rgba(160, 82, 45, 0.8) 100%);
-        color: white;
+        background: transparent;
+        color: var(--neon-blue);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Courier New', monospace;
+        position: relative;
+        overflow: hidden;
     }
 
     .control-btn:hover:not(:disabled) {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
+        background: rgba(0, 255, 252, 0.1);
+        text-shadow: 0 0 5px var(--neon-blue);
+        box-shadow: 0 0 10px var(--neon-blue);
+        transform: translateY(-2px);
     }
 
     .control-btn:disabled {
-        background: var(--coffee-darker);
-        color: var(--coffee-light);
+        border-color: var(--text-secondary);
+        color: var(--text-secondary);
         cursor: not-allowed;
-        opacity: 0.7;
+        opacity: 0.5;
     }
 
     .cycles-counter {
-        color: var(--coffee-light);
-        font-size: 1rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        letter-spacing: 1px;
     }
 
-    .coffee-beans {
+    .binary-grid {
         display: flex;
         justify-content: center;
         gap: 5px;
@@ -362,29 +388,36 @@
         flex-wrap: wrap;
     }
 
-    .bean {
-        font-size: 1.2rem;
-        animation: float 2s ease-in-out infinite;
+    .binary-digit {
+        font-size: 1rem;
+        color: var(--neon-blue);
+        text-shadow: 0 0 5px var(--neon-blue);
+        animation: blink 2s infinite;
     }
 
-    .bean-count {
-        color: var(--coffee-cream);
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
     }
 
     .settings-section {
-        background: rgba(26, 15, 10, 0.6);
+        background: var(--panel-bg);
         backdrop-filter: blur(10px);
-        border-radius: 20px;
+        border-radius: 0;
         padding: 25px;
-        border: 1px solid rgba(139, 69, 19, 0.3);
+        border: 1px solid var(--neon-purple);
+        box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
     }
 
     h3 {
-        color: var(--coffee-cream);
+        color: var(--neon-pink);
         margin-top: 0;
         margin-bottom: 25px;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
     }
 
     .setting-group {
@@ -395,18 +428,20 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: var(--coffee-cream);
+        color: var(--text-primary);
         margin-bottom: 8px;
+        font-size: 0.9rem;
     }
 
     .setting-input {
         width: 80px;
         padding: 8px 12px;
-        background: rgba(44, 24, 16, 0.5);
-        border: 1px solid rgba(139, 69, 19, 0.5);
-        color: var(--coffee-foam);
-        border-radius: 8px;
+        background: rgba(5, 5, 8, 0.7);
+        border: 1px solid var(--neon-blue);
+        color: var(--text-primary);
+        border-radius: 0;
         text-align: center;
+        font-family: 'Courier New', monospace;
     }
 
     .setting-input:disabled {
@@ -428,9 +463,9 @@
     .slider {
         width: 50px;
         height: 24px;
-        background: rgba(44, 24, 16, 0.8);
-        border: 1px solid var(--coffee-light);
-        border-radius: 24px;
+        background: rgba(5, 5, 8, 0.8);
+        border: 1px solid var(--neon-blue);
+        border-radius: 0;
         position: relative;
         transition: 0.3s;
     }
@@ -440,25 +475,25 @@
         position: absolute;
         width: 20px;
         height: 20px;
-        border-radius: 50%;
         left: 2px;
         top: 2px;
-        background: var(--coffee-light);
+        background: var(--neon-blue);
         transition: 0.3s;
     }
 
     .switch-input:checked + .slider:before {
         transform: translateX(26px);
-        background: var(--coffee-accent);
+        background: var(--neon-pink);
     }
 
     .switch-label {
-        color: var(--coffee-cream);
+        color: var(--text-primary);
+        font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
         .timer-display {
-            font-size: 3.5rem;
+            font-size: 3rem;
         }
 
         .timer-controls {

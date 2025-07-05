@@ -49,7 +49,7 @@
 
     function selectTab(tabId) {
         activeTab = tabId;
-        sidebarOpen = false; // Close sidebar on mobile after selection
+        sidebarOpen = false;
     }
 
     onMount(() => {
@@ -78,8 +78,8 @@
 </script>
 
 <svelte:head>
-    <title>☕ Pomoson - Your Productive Coffee Break</title>
-    <meta name="description" content="Stay focused and productive with our cozy coffee-themed productivity app">
+    <title>Pomoson</title>
+    <meta name="description" content="Stay focused and productive">
 </svelte:head>
 
 <main class="app">
@@ -110,29 +110,29 @@
         <Auth/>
     {:else}
         <div class="app-layout">
-            <!-- Floating Coffee Bean Navigation -->
-            <div class="coffee-bean-nav">
+            <!-- Floating Navigation -->
+            <div class="cyber-nav">
                 {#each tabs as tab}
                     <button
                             on:click={() => selectTab(tab.id)}
-                            class="bean-btn"
+                            class="nav-btn"
                             class:active={activeTab === tab.id}
                             title={tab.label}
                     >
-                        <span class="bean-icon">{tab.icon}</span>
-                        <span class="bean-label">{tab.label}</span>
+                        <span class="nav-icon">{tab.icon}</span>
+                        <span>{tab.label}</span>
                     </button>
                 {/each}
 
-                <button on:click={handleSignOut} class="bean-btn sign-out-btn" title="Sign Out">
-                    <span class="bean-icon">👋</span>
-                    <span class="bean-label">Sign Out</span>
+                <button on:click={handleSignOut} class="nav-btn sign-out-btn" title="Sign Out">
+                    <span class="nav-icon">👋</span>
+                    <span>Sign Out</span>
                 </button>
             </div>
 
+
             <!-- Main Content -->
             <div class="main-content">
-                <!-- Coffee Mug Header -->
                 <header class="coffee-header">
                     <div class="coffee-foam"></div>
                 </header>
@@ -155,181 +155,261 @@
 
 <style>
     :root {
-        --coffee-dark: #2C1810;
-        --coffee-darker: #1A0F0A;
-        --coffee-brown: #8B4513;
-        --coffee-light: #A0522D;
-        --coffee-cream: #D2B48C;
-        --coffee-foam: #F5E6D3;
-        --coffee-accent: #E6B325;
+        --neon-blue: #0ff0fc;
+        --neon-pink: #ff00ff;
+        --neon-purple: #bc13fe;
+        --dark-bg: #0a0a12;
+        --darker-bg: #050508;
+        --panel-bg: rgba(10, 10, 18, 0.4);
+        --text-primary: #e0e0ff;
+        --text-secondary: #a0a0c0;
+        --accent-error: #ff3860;
     }
 
     :global(*) {
         box-sizing: border-box;
+        scrollbar-color: var(--neon-blue) var(--dark-bg);
     }
 
     :global(body) {
         margin: 0;
-        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: linear-gradient(135deg, var(--coffee-dark) 0%, var(--coffee-darker) 100%);
-        color: var(--coffee-foam);
-        line-height: 1.6;
+        font-family: 'Courier New', monospace, 'SF Mono', 'Roboto Mono', sans-serif;
+        background: var(--dark-bg);
+        color: var(--text-primary);
+        line-height: 1.5;
+        overflow-x: hidden;
     }
 
     :global(::-webkit-scrollbar) {
         width: 8px;
+        height: 8px;
     }
 
     :global(::-webkit-scrollbar-track) {
-        background: #1A0F0A;
+        background: var(--dark-bg);
     }
 
     :global(::-webkit-scrollbar-thumb) {
-        background: #8B4513;
+        background: var(--neon-blue);
         border-radius: 4px;
     }
 
     :global(::-webkit-scrollbar-thumb:hover) {
-        background: #A0522D;
+        background: var(--neon-purple);
     }
 
     .app {
         min-height: 100vh;
         position: relative;
+        background:
+                radial-gradient(circle at 20% 30%, rgba(188, 19, 254, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 252, 0.15) 0%, transparent 30%),
+                var(--dark-bg);
     }
 
     .app-layout {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        position: relative;
     }
 
-    /* Coffee Bean Navigation */
-    .coffee-bean-nav {
+    /* Cyberpunk Navigation */
+    .cyber-nav {
         position: fixed;
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
-        gap: 10px;
-        background: rgba(26, 15, 10, 0.8);
-        backdrop-filter: blur(10px);
-        padding: 12px 20px;
-        border-radius: 50px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        gap: 8px;
+        background: var(--panel-bg);
+        backdrop-filter: blur(8px);
+        padding: 10px 10px;
+        border-radius: 4px;
+        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
         z-index: 100;
-        border: 1px solid rgba(139, 69, 19, 0.3);
+        border: 1px solid var(--neon-blue);
     }
 
-    .bean-btn {
+    .nav-btn {
         background: none;
         border: none;
-        color: var(--coffee-cream);
+        color: var(--text-secondary);
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: 8px 12px;
-        border-radius: 30px;
-        transition: all 0.3s ease;
+        padding: 8px 8px;
+        border-radius: 2px;
+        transition: all 0.2s ease;
         cursor: pointer;
         position: relative;
-    }
-
-    .bean-btn:hover {
-        background: rgba(160, 82, 45, 0.2);
-        transform: translateY(-3px);
-    }
-
-    .bean-btn.active {
-        background: rgba(160, 82, 45, 0.3);
-        color: var(--coffee-foam);
-        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
-    }
-
-    .bean-icon {
-        font-size: 1.4rem;
-    }
-
-    .bean-label {
+        font-family: 'Courier New', monospace;
+        text-transform: uppercase;
         font-size: 0.7rem;
-        font-weight: 500;
+        letter-spacing: 1px;
+    }
+
+    .nav-btn:hover {
+        color: var(--neon-blue);
+        text-shadow: 0 0 5px var(--neon-blue);
+    }
+
+    .nav-btn.active {
+        color: var(--neon-pink);
+        text-shadow: 0 0 8px var(--neon-pink);
+        background: rgba(188, 19, 254, 0.1);
+    }
+
+    .nav-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: var(--neon-pink);
+        box-shadow: 0 0 5px var(--neon-pink);
+    }
+
+    .nav-icon {
+        font-size: 1.2rem;
     }
 
     .sign-out-btn {
-        color: #FF6B6B;
+        color: var(--accent-error);
     }
 
-
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
-    }
-
-    @keyframes steam {
-        0%, 100% { opacity: 0.5; transform: translateY(0) scale(1); }
-        50% { opacity: 0.8; transform: translateY(-8px) scale(1.1); }
+    @keyframes scanline {
+        0% { background-position: 0 -100vh; }
+        100% { background-position: 0 100vh; }
     }
 
     /* Main Content */
     .main-content {
         flex: 1;
-        padding-bottom: 100px; /* Space for navigation */
+        padding-bottom: 100px;
+        position: relative;
+    }
+
+    .main-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+                rgba(10, 10, 18, 0.8) 50%,
+                rgba(0, 255, 252, 0.1) 50%
+        );
+        background-size: 100% 4px;
+        pointer-events: none;
+        animation: scanline 8s linear infinite;
+        opacity: 0.15;
+        z-index: 0;
     }
 
     .content-wrapper {
         max-width: 900px;
         margin: 0 auto;
         padding: 0 20px;
-    }
-
-    .coffee-header {
-        padding: 10px 10px 10px;
+        position: relative;
+        z-index: 1;
     }
 
     /* Responsive Adjustments */
     @media (max-width: 768px) {
-        .coffee-bean-nav {
+        .cyber-nav {
             bottom: 10px;
             padding: 8px 12px;
         }
 
-        .bean-btn {
+        .nav-btn {
             padding: 6px 8px;
-        }
-
-        .bean-icon {
-            font-size: 1.2rem;
-        }
-
-        .bean-label {
             font-size: 0.6rem;
         }
 
-        .coffee-header {
-            padding: 10px 10px 10px;
+        .nav-icon {
+            font-size: 1rem;
         }
-
     }
 
     @media (max-width: 480px) {
-        .coffee-bean-nav {
+        .cyber-nav {
             width: 95%;
             justify-content: space-around;
-            gap: 5px;
+            gap: 2px;
         }
 
-        .bean-label {
+        .nav-btn span:not(.nav-icon) {
             display: none;
         }
 
-        .bean-btn {
-            padding: 10px;
-        }
-
-        .app-title {
-            font-size: 1.5rem;
+        .nav-btn {
+            padding: 8px 10px;
         }
     }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 20px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        box-shadow: 0 0 12px rgba(0, 255, 252, 0.4);
+        backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 9999;
+        border: 1px solid;
+        max-width: 80%;
+        text-align: center;
+        animation: fadeInDown 0.4s ease-out;
+    }
+
+    .error-notification {
+        background: rgba(255, 56, 96, 0.1);
+        color: #ff3860;
+        border-color: #ff3860;
+    }
+
+    .success-notification {
+        background: rgba(0, 255, 252, 0.1);
+        color: var(--neon-blue);
+        border-color: var(--neon-blue);
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-left: auto;
+        padding: 0;
+        transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+        color: white;
+    }
+
+    /* Animation */
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -20px);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    }
+
 </style>

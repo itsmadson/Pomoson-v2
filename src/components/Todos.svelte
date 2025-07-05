@@ -246,15 +246,20 @@
 
     .todos-header {
         margin-bottom: 30px;
+        border-bottom: 1px solid var(--neon-blue);
+        padding-bottom: 20px;
     }
 
     h2 {
-        color: var(--coffee-cream);
+        color: var(--neon-pink);
         margin: 0 0 15px 0;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         display: flex;
         align-items: center;
         gap: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
     }
 
     .tabs {
@@ -266,23 +271,28 @@
 
     .tabs button {
         padding: 8px 16px;
-        background: rgba(44, 24, 16, 0.5);
-        border: 1px solid var(--coffee-light);
-        color: var(--coffee-cream);
-        border-radius: 20px;
-        font-size: 0.9rem;
+        background: rgba(5, 5, 8, 0.7);
+        border: 1px solid var(--neon-blue);
+        color: var(--text-primary);
+        border-radius: 0;
+        font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Courier New', monospace;
     }
 
     .tabs button:hover {
-        background: rgba(160, 82, 45, 0.3);
+        background: rgba(0, 255, 252, 0.1);
+        color: var(--neon-blue);
     }
 
     .tabs button.active {
-        background: var(--coffee-light);
-        color: var(--coffee-dark);
-        font-weight: 600;
+        background: rgba(0, 255, 252, 0.2);
+        color: var(--neon-blue);
+        border-color: var(--neon-blue);
+        font-weight: bold;
     }
 
     .add-todo {
@@ -292,28 +302,38 @@
     .input-container {
         display: flex;
         align-items: center;
-        background: rgba(44, 24, 16, 0.5);
-        border-radius: 12px;
+        background: rgba(5, 5, 8, 0.7);
+        border-radius: 0;
         padding: 5px 15px;
-        border: 1px solid rgba(139, 69, 19, 0.3);
+        border: 1px solid var(--neon-blue);
+        position: relative;
+    }
+
+    .input-container::before {
+        content: '>';
+        position: absolute;
+        left: 8px;
+        color: var(--neon-blue);
+        opacity: 0.5;
     }
 
     .icon {
         margin-right: 10px;
-        color: var(--coffee-cream);
+        color: var(--neon-blue);
     }
 
     .todo-input {
         flex: 1;
-        padding: 12px 0;
+        padding: 12px 0 12px 20px;
         background: transparent;
         border: none;
-        color: var(--coffee-foam);
+        color: var(--text-primary);
         font-size: 1rem;
+        font-family: 'Courier New', monospace;
     }
 
     .todo-input::placeholder {
-        color: var(--coffee-light);
+        color: var(--text-secondary);
         opacity: 0.7;
     }
 
@@ -323,60 +343,67 @@
 
     .add-btn {
         padding: 8px 16px;
-        background: var(--coffee-light);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
+        background: transparent;
+        color: var(--neon-blue);
+        border: 1px solid var(--neon-blue);
+        border-radius: 0;
+        font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'Courier New', monospace;
     }
 
     .add-btn:hover:not(:disabled) {
-        background: var(--coffee-brown);
-        transform: translateY(-2px);
+        background: rgba(0, 255, 252, 0.1);
+        text-shadow: 0 0 5px var(--neon-blue);
+        box-shadow: 0 0 10px var(--neon-blue);
     }
 
     .add-btn:disabled {
-        background: var(--coffee-darker);
-        color: var(--coffee-light);
+        border-color: var(--text-secondary);
+        color: var(--text-secondary);
         cursor: not-allowed;
     }
 
     .char-counter {
         text-align: right;
         font-size: 0.8rem;
-        color: var(--coffee-light);
+        color: var(--text-secondary);
         margin-top: 5px;
     }
 
     .loading-state {
         text-align: center;
         padding: 40px;
-        color: var(--coffee-cream);
+        color: var(--neon-blue);
     }
 
-    .coffee-cup {
+    .terminal-icon {
         font-size: 3rem;
         margin-bottom: 15px;
-        animation: bounce 2s infinite;
+        animation: blink 2s infinite;
     }
 
     .empty-state {
         text-align: center;
         padding: 40px;
-        color: var(--coffee-light);
+        color: var(--text-secondary);
     }
 
-    .coffee-icon {
+    .empty-icon {
         font-size: 3rem;
         margin-bottom: 15px;
+        color: var(--neon-blue);
         opacity: 0.7;
     }
 
     .empty-state h3 {
-        color: var(--coffee-cream);
+        color: var(--neon-pink);
         margin: 0 0 10px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
     }
 
     .empty-state p {
@@ -394,19 +421,22 @@
         align-items: center;
         gap: 15px;
         padding: 15px;
-        background: rgba(44, 24, 16, 0.5);
-        border-radius: 12px;
-        border: 1px solid rgba(139, 69, 19, 0.3);
+        background: rgba(5, 5, 8, 0.7);
+        border-radius: 0;
+        border: 1px solid var(--neon-blue);
         transition: all 0.3s ease;
+        position: relative;
     }
 
     .todo-item:hover {
-        background: rgba(44, 24, 16, 0.7);
+        background: rgba(5, 5, 8, 0.9);
         transform: translateY(-2px);
+        box-shadow: 0 0 10px rgba(0, 255, 252, 0.2);
     }
 
     .todo-item.completed {
         opacity: 0.6;
+        border-color: var(--text-secondary);
     }
 
     .todo-checkbox {
@@ -430,14 +460,13 @@
         position: relative;
         height: 20px;
         width: 20px;
-        background: rgba(26, 15, 10, 0.8);
-        border: 1px solid var(--coffee-light);
-        border-radius: 4px;
+        background: rgba(5, 5, 8, 0.8);
+        border: 1px solid var(--neon-blue);
         transition: all 0.3s ease;
     }
 
     .checkbox:checked ~ .checkmark {
-        background: var(--coffee-light);
+        background: var(--neon-blue);
     }
 
     .checkmark:after {
@@ -448,7 +477,7 @@
         top: 2px;
         width: 5px;
         height: 10px;
-        border: solid var(--coffee-dark);
+        border: solid var(--dark-bg);
         border-width: 0 2px 2px 0;
         transform: rotate(45deg);
     }
@@ -459,44 +488,45 @@
 
     .todo-text {
         flex: 1;
-        color: var(--coffee-foam);
+        color: var(--text-primary);
+        font-family: 'Courier New', monospace;
     }
 
     .todo-item.completed .todo-text {
         text-decoration: line-through;
-        color: var(--coffee-light);
+        color: var(--text-secondary);
     }
 
     .todo-meta {
         display: flex;
         gap: 15px;
         align-items: center;
-        font-size: 0.9rem;
-    }
-
-    .todo-date {
-        color: var(--coffee-light);
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        font-family: 'Courier New', monospace;
     }
 
     .pomodoro-btn {
-        background: rgba(210, 180, 140, 0.2);
-        border: 1px solid var(--coffee-cream);
-        color: var(--coffee-cream);
-        border-radius: 12px;
+        background: rgba(0, 255, 252, 0.1);
+        border: 1px solid var(--neon-blue);
+        color: var(--neon-blue);
+        border-radius: 0;
         padding: 4px 8px;
         font-size: 0.8rem;
         cursor: pointer;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .pomodoro-btn:hover {
-        background: rgba(210, 180, 140, 0.3);
+        background: rgba(0, 255, 252, 0.2);
     }
 
     .delete-btn {
         background: none;
         border: none;
-        color: #FF6B6B;
+        color: var(--accent-error);
         cursor: pointer;
         font-size: 1.2rem;
         opacity: 0.7;

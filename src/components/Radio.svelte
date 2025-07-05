@@ -45,16 +45,21 @@
     .radio-header {
         text-align: center;
         margin-bottom: 30px;
+        border-bottom: 1px solid var(--neon-blue);
+        padding-bottom: 20px;
     }
 
     h2 {
-        color: var(--coffee-cream);
+        color: var(--neon-pink);
         margin: 0 0 10px 0;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
     }
 
     .subtitle {
-        color: var(--coffee-light);
+        color: var(--text-secondary);
         margin: 0;
         font-style: italic;
     }
@@ -62,11 +67,12 @@
     .radio-player {
         width: 100%;
         height: 300px;
-        background: rgba(44, 24, 16, 0.5);
-        border-radius: 12px;
+        background: rgba(5, 5, 8, 0.7);
+        border-radius: 0;
         overflow: hidden;
-        border: 1px solid rgba(139, 69, 19, 0.3);
+        border: 1px solid var(--neon-blue);
         margin-bottom: 30px;
+        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
     }
 
     .radio-player iframe {
@@ -76,17 +82,20 @@
     }
 
     .radio-stations {
-        background: rgba(44, 24, 16, 0.5);
-        border-radius: 12px;
+        background: rgba(5, 5, 8, 0.7);
+        border-radius: 0;
         padding: 25px;
-        border: 1px solid rgba(139, 69, 19, 0.3);
+        border: 1px solid var(--neon-blue);
+        box-shadow: 0 0 15px rgba(0, 255, 252, 0.1);
     }
 
     .radio-stations h3 {
-        color: var(--coffee-cream);
+        color: var(--neon-pink);
         margin-top: 0;
         margin-bottom: 20px;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
     }
 
     .stations-grid {
@@ -100,25 +109,50 @@
         align-items: center;
         gap: 12px;
         padding: 15px;
-        background: rgba(26, 15, 10, 0.8);
-        border: 1px solid rgba(139, 69, 19, 0.5);
-        color: var(--coffee-cream);
-        border-radius: 8px;
+        background: rgba(5, 5, 8, 0.9);
+        border: 1px solid var(--neon-blue);
+        color: var(--text-primary);
+        border-radius: 0;
         cursor: pointer;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
 
     .station-btn:hover {
-        background: rgba(160, 82, 45, 0.3);
+        background: rgba(0, 255, 252, 0.1);
         transform: translateY(-3px);
+        box-shadow: 0 0 10px rgba(0, 255, 252, 0.2);
+    }
+
+    .station-btn.active {
+        border-color: var(--neon-pink);
+        color: var(--neon-pink);
+        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+    }
+
+    .station-btn.active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--neon-pink);
     }
 
     .station-icon {
         font-size: 1.5rem;
+        color: var(--neon-blue);
+    }
+
+    .station-btn.active .station-icon {
+        color: var(--neon-pink);
     }
 
     .station-name {
         font-weight: 500;
+        font-family: 'Courier New', monospace;
     }
 
     @media (max-width: 768px) {
