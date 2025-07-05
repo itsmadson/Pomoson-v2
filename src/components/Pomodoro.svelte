@@ -44,6 +44,7 @@
     }
 
     let timer;
+    let visibilityTimer; // Additional timer for visibility check
     let state = {
         minutes: 25,
         seconds: 0,
@@ -53,12 +54,83 @@
         workTime: 25,
         shortBreak: 5,
         longBreak: 15,
-        autoStart: true
+        autoStart: true,
+        startTime: null, // Track when timer started
+        totalDuration: 0, // Track total duration for background calculation
+        endTime: null // Track when timer should end
     };
 
     let currentWorkTitle = '';
 
     $: timerState.set(state);
+
+    // Key functions for persistence
+    function saveTimerState() {
+        const timerData = {
+            ...state,
+            currentWorkTitle,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('pomoson-timer-state', JSON.stringify(timerData));
+    }
+
+    function loadTimerState() {
+        try {
+            const savedData = localStorage.getItem('pomoson-timer-state');
+            if (savedData) {
+                const timerData = JSON.parse(savedData);
+                const now = Date.now();
+                const timeDiff = now - timerData.timestamp;
+
+                // If timer was active, calculate elapsed time
+                if (timerData.isActive && timeDiff < 24 * 60 * 60 * 1000) { // Only if less than 24 hours
+                    const elapsedSeconds = Math.floor(timeDiff / 1000);
+                    const totalSeconds = timerData.minutes * 60 + timerData.seconds;
+                    const remainingSeconds = totalSeconds - elapsedSeconds;
+
+                    if (remainingSeconds > 0) {
+                        // Timer still running
+                        state.minutes = Math.floor(remainingSeconds / 60);
+                        state.seconds = remainingSeconds % 60;
+                        state.isActive = true;
+                        state.startTime = timerData.startTime;
+                        state.endTime = timerData.endTime;
+                        state.totalDuration = timerData.totalDuration;
+                    } else {
+                        // Timer should have completed
+                        state.minutes = 0;
+                        state.seconds = 0;
+                        state.isActive = false;
+                        // Don't auto-complete, just reset
+                    }
+                } else {
+                    // Timer was not active, restore state as-is
+                    state.minutes = timerData.minutes;
+                    state.seconds = timerData.seconds;
+                    state.isActive = false; // Don't auto-start
+                }
+
+                // Restore other state
+                state.isWork = timerData.isWork;
+                state.cycles = timerData.cycles;
+                state.workTime = timerData.workTime;
+                state.shortBreak = timerData.shortBreak;
+                state.longBreak = timerData.longBreak;
+                state.autoStart = timerData.autoStart;
+                currentWorkTitle = timerData.currentWorkTitle || '';
+
+                state = { ...state };
+                return true;
+            }
+        } catch (err) {
+            console.error('Error loading timer state:', err);
+        }
+        return false;
+    }
+
+    function clearTimerState() {
+        localStorage.removeItem('pomoson-timer-state');
+    }
 
     function startTimer() {
         if (state.isActive) return;
@@ -67,17 +139,41 @@
             currentWorkTitle = 'Pomodoro Work Session';
         }
 
+        const now = Date.now();
+        const totalSeconds = state.minutes * 60 + state.seconds;
+
         state.isActive = true;
+        state.startTime = now;
+        state.endTime = now + (totalSeconds * 1000);
+        state.totalDuration = totalSeconds;
         state = { ...state };
-        timer = setInterval(updateTimer, 1000);
+        saveTimerState();
+
+        // Start both timers
+        timer = setInterval(() => {
+            updateTimerByInterval();
+        }, 1000);
+
+        // Backup timer that checks every 500ms and recalculates from start time
+        visibilityTimer = setInterval(() => {
+            updateTimerByTimestamp();
+        }, 500);
     }
 
     function stopTimer() {
         state.isActive = false;
+        state.startTime = null;
+        state.endTime = null;
         state = { ...state };
+        saveTimerState();
+
         if (timer) {
             clearInterval(timer);
             timer = null;
+        }
+        if (visibilityTimer) {
+            clearInterval(visibilityTimer);
+            visibilityTimer = null;
         }
     }
 
@@ -87,11 +183,18 @@
         state.minutes = state.workTime;
         state.seconds = 0;
         state.cycles = 0;
+        state.startTime = null;
+        state.endTime = null;
+        state.totalDuration = 0;
         currentWorkTitle = '';
         state = { ...state };
+        clearTimerState();
     }
 
-    function updateTimer() {
+    // Original interval-based update (for when tab is active)
+    function updateTimerByInterval() {
+        if (!state.isActive) return;
+
         if (state.seconds === 0) {
             if (state.minutes === 0) {
                 // Timer completed
@@ -105,10 +208,38 @@
             state.seconds--;
         }
         state = { ...state };
+        saveTimerState();
+    }
+
+    // Timestamp-based update (works regardless of tab visibility)
+    function updateTimerByTimestamp() {
+        if (!state.isActive || !state.endTime) return;
+
+        const now = Date.now();
+        const remainingMs = state.endTime - now;
+
+        if (remainingMs <= 0) {
+            // Timer completed
+            handleTimerComplete();
+            return;
+        }
+
+        const remainingSeconds = Math.ceil(remainingMs / 1000);
+        const newMinutes = Math.floor(remainingSeconds / 60);
+        const newSeconds = remainingSeconds % 60;
+
+        // Only update if values have changed to avoid unnecessary re-renders
+        if (newMinutes !== state.minutes || newSeconds !== state.seconds) {
+            state.minutes = newMinutes;
+            state.seconds = newSeconds;
+            state = { ...state };
+            saveTimerState();
+        }
     }
 
     async function handleTimerComplete() {
         stopTimer(); // Stop the timer first
+        clearTimerState(); // Clear saved state
 
         if (state.isWork) {
             // Work session completed
@@ -129,6 +260,19 @@
 
             showNotification(`Work session complete! Time for a ${isLongBreak ? 'long' : 'short'} break.`);
 
+            // Request notification permission if not already granted
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+
+            // Show browser notification if permission is granted
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Pomoson Timer', {
+                    body: `Work session complete! Time for a ${isLongBreak ? 'long' : 'short'} break.`,
+                    icon: '/favicon.ico'
+                });
+            }
+
             if (state.autoStart) {
                 // Auto-start break
                 startTimer();
@@ -141,6 +285,14 @@
 
             showNotification('☕ Break time over! Ready for another work session?');
 
+            // Show browser notification if permission is granted
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Pomoson Timer', {
+                    body: 'Break time over! Ready for another work session?',
+                    icon: '/favicon.ico'
+                });
+            }
+
             if (state.autoStart) {
                 // Don't auto-start work session, let user set title
                 currentWorkTitle = ''; // Reset title for new work session
@@ -148,6 +300,7 @@
         }
 
         state = { ...state };
+        saveTimerState();
     }
 
     async function createWorklog() {
@@ -186,14 +339,31 @@
 
         state.seconds = 0;
         state = { ...state };
+        saveTimerState();
     }
 
     function formatTime(minutes, seconds) {
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
+    // Handle page visibility changes
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            // Page is hidden, rely more on timestamp-based updates
+            console.log('Page hidden - relying on timestamp-based timer');
+        } else {
+            // Page is visible, both timers will work
+            console.log('Page visible - both timers active');
+
+            // Force an immediate timestamp-based update when page becomes visible
+            if (state.isActive) {
+                updateTimerByTimestamp();
+            }
+        }
+    }
+
     onMount(() => {
-        // Load settings from localStorage if available
+        // First load settings from localStorage
         const savedSettings = localStorage.getItem('pomoson-settings');
         if (savedSettings) {
             try {
@@ -202,19 +372,44 @@
                 state.shortBreak = settings.shortBreak || 5;
                 state.longBreak = settings.longBreak || 15;
                 state.autoStart = settings.autoStart !== undefined ? settings.autoStart : true;
-                state.minutes = state.workTime;
-                state = { ...state };
             } catch (err) {
                 console.error('Error loading settings:', err);
             }
         }
 
-        // Add click listener for dropdown
+        // Then try to load timer state (this will override minutes if there's an active timer)
+        const hasActiveTimer = loadTimerState();
+
+        // If no active timer was loaded, set default minutes
+        if (!hasActiveTimer) {
+            state.minutes = state.workTime;
+        }
+
+        state = { ...state };
+
+        // If timer was active, restart both intervals
+        if (state.isActive) {
+            timer = setInterval(() => {
+                updateTimerByInterval();
+            }, 1000);
+
+            visibilityTimer = setInterval(() => {
+                updateTimerByTimestamp();
+            }, 500);
+        }
+
+        // Add event listeners
         document.addEventListener('click', handleClickOutside);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        // Request notification permission on mount
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
     });
 
     onDestroy(() => {
-        stopTimer(); // Use stopTimer instead of direct clearInterval
+        stopTimer(); // This will save the current state
 
         // Save settings
         try {
@@ -228,8 +423,9 @@
             console.error('Error saving settings:', err);
         }
 
-        // Remove click listener
+        // Remove event listeners
         document.removeEventListener('click', handleClickOutside);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
     });
 </script>
 
