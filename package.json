@@ -4,15 +4,15 @@
   "description": "Pomodoro timer with todo list and work logging",
   "main": "public/electron.js",
   "type": "commonjs",
-"scripts": {
-  "build": "rollup -c",
-  "dev": "rollup -c -w",
-  "start": "sirv public --no-clear --host localhost --port 8080",
-  "electron": "electron .",
-  "electron-dev": "concurrently -k \"npm run dev\" \"wait-on http://localhost:8080 && electron .\"",
-  "electron-build": "npm run build && electron-builder",
-  "preview": "npm run build && electron ."
-},
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public --no-clear --host localhost --port 8080",
+    "electron": "electron .",
+    "electron-dev": "concurrently -k \"npm run dev\" \"wait-on http://localhost:8080 && electron .\"",
+    "electron-build": "npm run build && electron-builder",
+    "preview": "npm run build && electron ."
+  },
   "keywords": [
     "pomodoro",
     "productivity",
@@ -40,7 +40,8 @@
     "wait-on": "^7.0.1"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.38.0"
+    "@supabase/supabase-js": "^2.38.0",
+    "svelte-select": "^5.8.3"
   },
   "build": {
     "appId": "com.pomoson.app",

@@ -7,6 +7,125 @@
     import Todos from './components/Todos.svelte';
     import Worklogs from './components/Worklogs.svelte';
     import Radio from './components/Radio.svelte';
+    import { theme } from './lib/theme';
+
+    let currentTheme;
+    theme.subscribe(value => {
+        currentTheme = value;
+        document.documentElement.setAttribute('data-theme', value);
+    });
+
+    const themeBackgrounds = {
+        Pomoson: `
+        radial-gradient(at 20% 30%, rgba(93, 71, 139, 0.12), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(51, 102, 153, 0.10), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(242, 204, 143, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(10, 10, 10, 0.03), transparent 70%)`,
+
+        dracula: `
+        radial-gradient(at 30% 30%, rgba(189, 147, 249, 0.15), transparent 60%),
+        radial-gradient(at 70% 70%, rgba(255, 121, 198, 0.12), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(139, 233, 253, 0.08), transparent 60%)`,
+
+        gruvbox: `
+        radial-gradient(at 20% 30%, rgba(184, 129, 69, 0.15), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(168, 153, 132, 0.1), transparent 60%)`,
+
+        jungle: `
+        radial-gradient(at 25% 30%, rgba(106, 176, 76, 0.15), transparent 60%),
+        radial-gradient(at 75% 70%, rgba(34, 166, 179, 0.1), transparent 60%)`,
+
+        light: `
+        radial-gradient(at 20% 30%, rgba(142, 36, 170, 0.12), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(30, 136, 229, 0.1), transparent 60%)`,
+
+        mono: `
+        radial-gradient(at 20% 30%, rgba(150, 150, 150, 0.12), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(100, 100, 100, 0.1), transparent 60%)`,
+
+        "yellow-gruvbox": `
+        radial-gradient(at 25% 25%, rgba(152, 151, 26, 0.12), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(184, 187, 38, 0.10), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(121, 116, 14, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(40, 40, 40, 0.02), transparent 70%)`,
+
+        "pink-acid": `
+        radial-gradient(at 20% 20%, rgba(249, 38, 114, 0.10), transparent 60%),
+        radial-gradient(at 80% 75%, rgba(166, 226, 46, 0.10), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(253, 151, 31, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(39, 40, 34, 0.02), transparent 70%)`,
+
+        "frosty-blue": `
+        radial-gradient(at 20% 25%, rgba(136, 192, 208, 0.10), transparent 60%),
+        radial-gradient(at 70% 70%, rgba(94, 129, 172, 0.10), transparent 60%),
+        radial-gradient(at 60% 30%, rgba(59, 66, 82, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(46, 52, 64, 0.02), transparent 70%)`,
+
+        "warm-gruvbox": `
+        radial-gradient(at 20% 20%, rgba(152, 151, 26, 0.14), transparent 60%),
+        radial-gradient(at 80% 75%, rgba(184, 187, 38, 0.12), transparent 60%),
+        radial-gradient(at 50% 60%, rgba(121, 116, 14, 0.10), transparent 60%),
+        radial-gradient(at 40% 40%, rgba(60, 56, 54, 0.10), transparent 70%),
+        radial-gradient(at 65% 30%, rgba(146, 131, 116, 0.06), transparent 65%),
+        radial-gradient(at 50% 50%, rgba(40, 40, 40, 0.03), transparent 75%)`,
+
+        "blue-purple-green": `
+        radial-gradient(at 25% 30%, rgba(97, 175, 239, 0.10), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(198, 120, 221, 0.10), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(152, 195, 121, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(40, 44, 52, 0.02), transparent 70%)`,
+
+        "neon-night": `
+        radial-gradient(at 10% 20%, rgba(255, 0, 153, 0.14), transparent 60%),
+        radial-gradient(at 90% 60%, rgba(0, 255, 255, 0.12), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(255, 255, 0, 0.06), transparent 60%),
+        radial-gradient(at 70% 30%, rgba(0, 0, 0, 0.06), transparent 70%)`,
+
+        "solarized-teal": `
+        radial-gradient(at 15% 15%, rgba(0, 150, 199, 0.10), transparent 60%),
+        radial-gradient(at 70% 85%, rgba(0, 214, 170, 0.12), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(7, 54, 66, 0.08), transparent 70%),
+        radial-gradient(at 30% 60%, rgba(38, 139, 210, 0.06), transparent 65%)`,
+
+        "mystical-purple": `
+        radial-gradient(at 20% 30%, rgba(93, 71, 139, 0.12), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(51, 102, 153, 0.10), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(242, 204, 143, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(10, 10, 10, 0.03), transparent 70%)`,
+
+        "sunset-sky": `
+        radial-gradient(at 10% 20%, rgba(255, 94, 87, 0.12), transparent 60%),
+        radial-gradient(at 80% 80%, rgba(255, 195, 113, 0.10), transparent 60%),
+        radial-gradient(at 60% 40%, rgba(255, 247, 174, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(50, 10, 30, 0.02), transparent 70%)`,
+
+        matrix: `
+        radial-gradient(at 20% 30%, rgba(0, 255, 0, 0.10), transparent 60%),
+        radial-gradient(at 80% 70%, rgba(0, 128, 0, 0.08), transparent 60%),
+        radial-gradient(at 50% 50%, rgba(0, 64, 0, 0.06), transparent 70%),
+        radial-gradient(at 70% 20%, rgba(10, 10, 10, 0.04), transparent 65%)`
+    };
+
+    const themeBgColors = {
+        Pomoson: '#1a1b26',
+        dracula: '#282a36',
+        gruvbox: '#282828',
+        jungle: '#1e272e',
+        light: '#f5f5f5',
+        mono: '#111',
+
+        "yellow-gruvbox": '#1d2021',
+        "pink-acid": '#272822',
+        "frosty-blue": '#2e3440',
+        "warm-gruvbox": '#1d2021',
+        "blue-purple-green": '#282c34',
+        "neon-night": '#0f0c29',
+        "solarized-teal": '#073642',
+        "mystical-purple": '#1a1b26',
+        "sunset-sky": '#2c001e',
+        matrix: '#0c0c0c'
+    };
+
 
     let activeTab = 'pomodoro';
     let currentSession = null;
@@ -76,6 +195,7 @@
         };
     });
 </script>
+
 
 <svelte:head>
     <title>Pomoson</title>
@@ -151,6 +271,14 @@
             </div>
         </div>
     {/if}
+    <div
+            class="dynamic-background"
+            style="
+        background: {themeBackgrounds[currentTheme]};
+        background-color: {themeBgColors[currentTheme]};
+    "
+    ></div>
+
 </main>
 
 <style>
@@ -167,6 +295,73 @@
         --glass-border: rgba(255, 255, 255, 0.15);
         --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
+
+    :root[data-theme='Pomoson'] {
+        --neon-blue: #00d4ff;
+        --neon-pink: #ff006e;
+        --neon-purple: #8b5cf6;
+        --dark-bg: #0f0f0f;
+        --panel-bg: rgba(255, 255, 255, 0.08);
+        --text-primary: #fff;
+        --text-secondary: #aaa;
+        --accent-error: #ff453a;
+    }
+
+    :root[data-theme='dracula'] {
+        --neon-blue: #8be9fd;
+        --neon-pink: #ff79c6;
+        --neon-purple: #bd93f9;
+        --dark-bg: #282a36;
+        --panel-bg: #44475a;
+        --text-primary: #f8f8f2;
+        --text-secondary: #6272a4;
+        --accent-error: #ff5555;
+    }
+
+    :root[data-theme='gruvbox'] {
+        --neon-blue: #83a598;
+        --neon-pink: #d3869b;
+        --neon-purple: #b16286;
+        --dark-bg: #282828;
+        --panel-bg: #3c3836;
+        --text-primary: #ebdbb2;
+        --text-secondary: #a89984;
+        --accent-error: #cc241d;
+    }
+
+    :root[data-theme='jungle'] {
+        --neon-blue: #6ab04c;
+        --neon-pink: #f0932b;
+        --neon-purple: #22a6b3;
+        --dark-bg: #1e272e;
+        --panel-bg: #2f3640;
+        --text-primary: #dcdde1;
+        --text-secondary: #7f8fa6;
+        --accent-error: #ff4757;
+    }
+
+    :root[data-theme='light'] {
+        --neon-blue: #1e88e5;
+        --neon-pink: #d81b60;
+        --neon-purple: #8e24aa;
+        --dark-bg: #f5f5f5;
+        --panel-bg: #ffffff;
+        --text-primary: #111;
+        --text-secondary: #444;
+        --accent-error: #e53935;
+    }
+
+    :root[data-theme='mono'] {
+        --neon-blue: #666;
+        --neon-pink: #999;
+        --neon-purple: #aaa;
+        --dark-bg: #111;
+        --panel-bg: #222;
+        --text-primary: #eee;
+        --text-secondary: #aaa;
+        --accent-error: #c00;
+    }
+
 
     :global(*) {
         box-sizing: border-box;
@@ -202,8 +397,7 @@
         background: var(--neon-purple);
     }
 
-    .app::before {
-        content: '';
+    .dynamic-background {
         position: fixed;
         top: 0;
         left: 0;
@@ -211,19 +405,10 @@
         height: 100vh;
         z-index: -1;
         pointer-events: none;
-
-        background:
-                radial-gradient(at 25% 25%, rgba(139, 92, 246, 0.12), transparent 60%),  /* Darker neon purple */
-                radial-gradient(at 80% 70%, rgba(0, 212, 255, 0.10), transparent 60%),   /* Darker neon cyan */
-                radial-gradient(at 60% 40%, rgba(255, 0, 110, 0.06), transparent 60%),   /* Darker neon pink */
-                radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.015), transparent 70%); /* Subtle dim white glow */
-
         animation: moveBackground 12s ease-in-out infinite;
-        will-change: transform;
-        clip-path: inset(0 0 0 0);
         opacity: 0.85;
+        will-change: transform;
     }
-
 
     @keyframes moveBackground {
         0% {

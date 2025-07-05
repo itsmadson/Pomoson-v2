@@ -2,6 +2,46 @@
     import { onMount, onDestroy } from 'svelte';
     import { supabase, getCurrentUser } from '../lib/supabase';
     import { timerState, showNotification, showError } from '../lib/stores';
+    import { theme } from '../lib/theme';
+
+    const themeOptions = [
+        { value: 'Pomoson', label: 'Pomoson' },
+        { value: 'dracula', label: 'Dracula' },
+        { value: 'gruvbox', label: 'Gruvbox' },
+        { value: 'jungle', label: 'Jungle' },
+        { value: 'light', label: 'Light' },
+        { value: 'mono', label: 'Mono' },
+        { value: 'yellow-gruvbox', label: 'Yellow Gruvbox' },
+        { value: 'pink-acid', label: 'Pink Acid' },
+        { value: 'frosty-blue', label: 'Frosty Blue' },
+        { value: 'warm-gruvbox', label: 'Warm Gruvbox' },
+        { value: 'blue-purple-green', label: 'Blue Purple Green' },
+        { value: 'neon-night', label: 'Neon Night' },
+        { value: 'solarized-teal', label: 'Solarized Teal' },
+        { value: 'mystical-purple', label: 'Mystical Purple' },
+        { value: 'sunset-sky', label: 'Sunset Sky' },
+        { value: 'matrix', label: 'Matrix' }
+    ];
+
+    let selectedTheme = $theme;
+    let isDropdownOpen = false;
+
+    function handleThemeChange(newTheme) {
+        selectedTheme = newTheme;
+        theme.set(newTheme);
+        isDropdownOpen = false;
+    }
+
+    function toggleDropdown() {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+    // Close dropdown when clicking outside
+    function handleClickOutside(event) {
+        if (!event.target.closest('.custom-select')) {
+            isDropdownOpen = false;
+        }
+    }
 
     let timer;
     let state = {
@@ -168,6 +208,9 @@
                 console.error('Error loading settings:', err);
             }
         }
+
+        // Add click listener for dropdown
+        document.addEventListener('click', handleClickOutside);
     });
 
     onDestroy(() => {
@@ -184,6 +227,9 @@
         } catch (err) {
             console.error('Error saving settings:', err);
         }
+
+        // Remove click listener
+        document.removeEventListener('click', handleClickOutside);
     });
 </script>
 
@@ -242,7 +288,7 @@
     </div>
 
     <div class="settings-section">
-        <h3>⚙ Timer Settings</h3>
+        <h3>⚙ Settings</h3>
 
         <div class="setting-group">
             <label class="setting-label">
@@ -304,6 +350,35 @@
             </label>
         </div>
 
+        <div class="setting-group">
+            <label class="setting-label">
+                <span>🎨 Theme</span>
+                <div class="custom-select">
+                    <button
+                            class="select-button"
+                            on:click={toggleDropdown}
+                            type="button"
+                    >
+                        {themeOptions.find(opt => opt.value === selectedTheme)?.label || 'Select Theme'}
+                        <span class="select-arrow" class:open={isDropdownOpen}>▼</span>
+                    </button>
+                    {#if isDropdownOpen}
+                        <div class="select-dropdown">
+                            {#each themeOptions as option}
+                                <button
+                                        class="select-option"
+                                        class:selected={option.value === selectedTheme}
+                                        on:click={() => handleThemeChange(option.value)}
+                                        type="button"
+                                >
+                                    {option.label}
+                                </button>
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
+            </label>
+        </div>
     </div>
 </div>
 
@@ -581,16 +656,93 @@
         cursor: not-allowed;
     }
 
+    /* Custom Select Styles */
+    .custom-select {
+        position: relative;
+        width: 140px;
+    }
 
-    .setting-label {
+    .select-button {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        color: var(--text-primary);
-        margin-bottom: 8px;
-        font-size: 13px;
-        font-weight: 500;
+        justify-content: space-between;
         width: 100%;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
+        color: var(--text-primary);
+        border-radius: 10px;
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .select-button:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .select-button:focus {
+        outline: none;
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+    }
+
+    .select-arrow {
+        font-size: 10px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--text-secondary);
+    }
+
+    .select-arrow.open {
+        transform: rotate(180deg);
+    }
+
+    .select-dropdown {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        margin-bottom: 4px;
+        overflow: hidden;
+    }
+
+    .select-option {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 13px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: left;
+    }
+
+    .select-option:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--neon-blue);
+    }
+
+    .select-option.selected {
+        background: rgba(0, 212, 255, 0.2);
+        color: var(--neon-blue);
+    }
+
+    .select-option.selected:hover {
+        background: rgba(0, 212, 255, 0.3);
     }
 
     @media (max-width: 400px) {
@@ -637,6 +789,10 @@
         .setting-input {
             width: 100%;
             padding: 6px 10px;
+        }
+
+        .custom-select {
+            width: 100%;
         }
 
         .slider {
