@@ -128,40 +128,24 @@
         min-height: 100vh;
         padding: 20px;
         background:
-                radial-gradient(circle at 20% 30%, rgba(188, 19, 254, 0.15) 0%, transparent 30%),
-                radial-gradient(circle at 80% 70%, rgba(0, 255, 252, 0.15) 0%, transparent 30%),
-                var(--dark-bg);
+                radial-gradient(ellipse at top, rgba(139, 92, 246, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse at bottom, rgba(0, 212, 255, 0.08) 0%, transparent 60%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         position: relative;
         overflow: hidden;
     }
 
-    .auth-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(
-                rgba(10, 10, 18, 0.8) 50%,
-                rgba(0, 255, 252, 0.1) 50%
-        );
-        background-size: 100% 4px;
-        pointer-events: none;
-        animation: scanline 6s linear infinite;
-        opacity: 0.1;
-    }
-
     .auth-card {
-        background: var(--panel-bg);
-        backdrop-filter: blur(10px);
-        border-radius: 0;
-        padding: 40px;
-        max-width: 400px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(40px) saturate(1.8);
+        -webkit-backdrop-filter: blur(40px) saturate(1.8);
+        border-radius: 28px;
+        padding: 48px;
+        max-width: 420px;
         width: 100%;
         text-align: center;
-        box-shadow: 0 0 20px rgba(0, 255, 252, 0.2);
-        border: 1px solid var(--neon-blue);
+        box-shadow: var(--glass-shadow);
+        border: 1px solid var(--glass-border);
         position: relative;
         overflow: hidden;
     }
@@ -169,75 +153,71 @@
     .auth-card::before {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
+        inset: 0;
         background: linear-gradient(
-                to bottom right,
-                transparent 45%,
-                rgba(0, 255, 252, 0.1) 50%,
-                transparent 55%
+                135deg,
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0) 60%
         );
-        animation: shine 3s infinite;
+        pointer-events: none;
     }
 
     .cyber-icon {
-        font-size: 3rem;
-        margin-bottom: 10px;
+        font-size: 48px;
+        margin-bottom: 16px;
         color: var(--neon-blue);
-        text-shadow: 0 0 10px var(--neon-blue);
     }
 
     h1 {
-        font-size: 1.8rem;
-        margin-bottom: 5px;
-        color: var(--neon-pink);
-        text-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
-        letter-spacing: 1px;
-        text-transform: uppercase;
+        font-size: 28px;
+        margin-bottom: 8px;
+        color: var(--text-primary);
+        font-weight: 600;
+        letter-spacing: -0.02em;
     }
 
     .subtitle {
         color: var(--text-secondary);
-        margin-bottom: 30px;
-        font-size: 0.9rem;
+        margin-bottom: 32px;
+        font-size: 15px;
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         position: relative;
     }
 
     .input-label {
         display: flex;
         align-items: center;
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
-        padding: 5px 15px;
-        border: 1px solid var(--neon-blue);
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 8px 16px;
+        border: 1px solid var(--glass-border);
         position: relative;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
-    .input-label::before {
-        content: '>';
-        position: absolute;
-        left: 8px;
-        color: var(--neon-blue);
+    .input-label:focus-within {
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .input-icon {
-        margin-right: 10px;
+        margin-right: 12px;
         color: var(--neon-blue);
+        opacity: 0.8;
     }
 
     .input-field {
         flex: 1;
-        padding: 12px 0 12px 20px;
+        padding: 12px 0 12px 8px;
         background: transparent;
         border: none;
         color: var(--text-primary);
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 16px;
     }
 
@@ -252,37 +232,39 @@
 
     .auth-button {
         width: 100%;
-        padding: 14px;
-        background: transparent;
+        padding: 16px;
+        background: rgba(0, 212, 255, 0.15);
         color: var(--neon-blue);
-        border: 1px solid var(--neon-blue);
-        font-family: 'Courier New', monospace;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 16px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 16px;
-        font-weight: bold;
+        font-weight: 500;
         cursor: pointer;
-        margin: 20px 0;
-        transition: all 0.3s ease;
+        margin: 24px 0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .auth-button:hover:not(:disabled) {
-        background: rgba(0, 255, 252, 0.1);
-        text-shadow: 0 0 5px var(--neon-blue);
-        box-shadow: 0 0 10px var(--neon-blue);
+        background: rgba(0, 212, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
 
     .auth-button:disabled {
-        border-color: var(--text-secondary);
+        border-color: rgba(255, 255, 255, 0.05);
         color: var(--text-secondary);
         cursor: not-allowed;
+        opacity: 0.5;
     }
 
     .loading-dots {
         display: inline-flex;
-        gap: 6px;
+        gap: 8px;
     }
 
     .loading-dots span {
@@ -291,7 +273,6 @@
         background: var(--neon-blue);
         border-radius: 50%;
         animation: pulse 1.5s infinite;
-        box-shadow: 0 0 5px var(--neon-blue);
     }
 
     .loading-dots span:nth-child(2) {
@@ -307,29 +288,33 @@
         border: none;
         color: var(--text-secondary);
         cursor: pointer;
-        font-size: 0.8rem;
+        font-size: 14px;
         text-decoration: none;
-        font-family: 'Courier New', monospace;
-        text-transform: uppercase;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        transition: color 0.2s;
     }
 
     .toggle-button:hover:not(:disabled) {
-        color: var(--neon-pink);
-        text-shadow: 0 0 5px var(--neon-pink);
+        color: var(--neon-blue);
     }
 
-    @keyframes shine {
-        0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    @keyframes pulse {
+        0%, 100% { opacity: 0.5; transform: scale(0.9); }
+        50% { opacity: 1; transform: scale(1.1); }
     }
 
     @media (max-width: 480px) {
         .auth-card {
-            padding: 30px 20px;
+            padding: 32px 24px;
+            border-radius: 24px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 24px;
+        }
+
+        .cyber-icon {
+            font-size: 40px;
         }
     }
 </style>

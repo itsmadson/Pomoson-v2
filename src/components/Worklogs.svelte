@@ -560,185 +560,182 @@
     .worklogs-container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 24px 20px;
     }
 
     .worklogs-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
+        margin-bottom: 32px;
         flex-wrap: wrap;
-        gap: 20px;
-        border-bottom: 1px solid var(--neon-blue);
-        padding-bottom: 20px;
+        gap: 16px;
+    }
+
+    h2 {
+        color: var(--text-primary);
+        margin: 0;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
     }
 
     .header-actions {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
         flex-wrap: wrap;
     }
 
-    h2 {
-        color: var(--neon-pink);
-        margin: 0;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
-    }
-
     .date-input {
-        padding: 10px 15px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
-        font-size: 0.9rem;
-        font-family: 'Courier New', monospace;
-        transition: all 0.3s ease;
+        border-radius: 16px;
+        font-size: 14px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .date-input:focus {
         outline: none;
-        border-color: var(--neon-pink);
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .config-btn {
-        padding: 10px 15px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
+        border-radius: 16px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.8rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 14px;
         display: flex;
         align-items: center;
         gap: 8px;
-        font-family: 'Courier New', monospace;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .config-btn.configured {
-        border-color: var(--neon-pink);
-        color: var(--neon-pink);
+        border-color: var(--neon-purple);
+        color: var(--neon-purple);
     }
 
     .config-btn:hover {
-        background: rgba(0, 255, 252, 0.1);
-        color: var(--neon-blue);
-        border-color: var(--neon-blue);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
     }
 
     .stats-cards {
         display: flex;
-        gap: 20px;
-        margin-bottom: 30px;
+        gap: 16px;
+        margin-bottom: 32px;
         flex-wrap: wrap;
     }
 
     .stat-card {
         flex: 1;
-        min-width: 150px;
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
+        min-width: 160px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
         padding: 20px;
         text-align: center;
-        border: 1px solid var(--neon-blue);
-        transition: transform 0.3s ease;
+        border: 1px solid var(--glass-border);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
     }
 
     .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
+        border-color: rgba(255, 255, 255, 0.25);
     }
 
     .stat-card.accent {
-        border-color: var(--neon-pink);
-    }
-
-    .stat-card.accent:hover {
-        box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+        border-color: rgba(139, 92, 246, 0.3);
     }
 
     .stat-icon {
-        font-size: 2rem;
-        margin-bottom: 10px;
+        font-size: 24px;
+        margin-bottom: 12px;
         display: block;
         color: var(--neon-blue);
     }
 
     .stat-card.accent .stat-icon {
-        color: var(--neon-pink);
+        color: var(--neon-purple);
     }
 
     .stat-value {
-        font-size: 1.8rem;
-        font-weight: bold;
+        font-size: 28px;
+        font-weight: 600;
         color: var(--text-primary);
-        margin-bottom: 5px;
-        font-family: 'Courier New', monospace;
+        margin-bottom: 4px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .stat-label {
         color: var(--text-secondary);
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-size: 14px;
+        font-weight: 500;
     }
 
     .add-worklog {
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
-        padding: 25px;
-        margin-bottom: 30px;
-        border: 1px solid var(--neon-purple);
-        box-shadow: 0 0 15px rgba(188, 19, 254, 0.1);
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 28px;
+        margin-bottom: 32px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
     }
 
     h3 {
-        color: var(--neon-pink);
+        color: var(--text-primary);
         margin-top: 0;
         margin-bottom: 20px;
-        font-size: 1.2rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
 
     .add-form {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-    }
-
-    .title-input-container {
-        position: relative;
+        gap: 16px;
     }
 
     .worklog-input, .worklog-textarea {
         width: 100%;
-        padding: 12px 15px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
+        border-radius: 16px;
+        font-size: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-sizing: border-box;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .worklog-input:focus, .worklog-textarea:focus {
         outline: none;
-        border-color: var(--neon-pink);
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .worklog-input::placeholder, .worklog-textarea::placeholder {
@@ -747,68 +744,14 @@
     }
 
     .worklog-textarea {
-        min-height: 80px;
+        min-height: 100px;
         resize: vertical;
-        font-family: inherit;
-    }
-
-    .search-indicator {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 1rem;
-        color: var(--neon-blue);
-        pointer-events: none;
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0%, 100% { opacity: 0.7; }
-        50% { opacity: 1; }
-    }
-
-    .suggestions-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: rgba(5, 5, 8, 0.95);
-        border: 1px solid var(--neon-blue);
-        border-top: none;
-        border-radius: 0;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 1000;
-        backdrop-filter: blur(10px);
-    }
-
-    .suggestion-item {
-        padding: 12px 15px;
-        cursor: pointer;
-        color: var(--text-primary);
-        border-bottom: 1px solid rgba(0, 255, 252, 0.1);
-        transition: background-color 0.2s;
-        font-size: 0.9rem;
-    }
-
-    .suggestion-item:hover {
-        background: rgba(0, 255, 252, 0.1);
-    }
-
-    .suggestion-item:last-child {
-        border-bottom: none;
-    }
-
-    .suggestion-item strong {
-        color: var(--neon-pink);
-        font-weight: bold;
     }
 
     .duration-row {
         display: flex;
         align-items: flex-end;
-        gap: 20px;
+        gap: 16px;
         flex-wrap: wrap;
     }
 
@@ -821,53 +764,58 @@
         display: block;
         color: var(--text-primary);
         margin-bottom: 8px;
-        font-size: 0.9rem;
+        font-size: 14px;
+        font-weight: 500;
     }
 
     .duration-field {
         width: 100%;
-        padding: 10px 15px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
-        transition: all 0.3s ease;
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-sizing: border-box;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .duration-field:focus {
         outline: none;
-        border-color: var(--neon-pink);
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .add-btn {
-        padding: 12px 24px;
-        background: transparent;
+        padding: 14px 28px;
+        background: rgba(0, 212, 255, 0.15);
         color: var(--neon-blue);
-        border: 1px solid var(--neon-blue);
-        border-radius: 0;
-        font-weight: bold;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 16px;
+        font-weight: 500;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         align-self: flex-end;
         white-space: nowrap;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 15px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .add-btn:hover:not(:disabled) {
-        background: rgba(0, 255, 252, 0.1);
-        text-shadow: 0 0 5px var(--neon-blue);
-        box-shadow: 0 0 10px var(--neon-blue);
+        background: rgba(0, 212, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
 
     .add-btn:disabled {
-        border-color: var(--text-secondary);
+        border-color: rgba(255, 255, 255, 0.05);
         color: var(--text-secondary);
         cursor: not-allowed;
+        opacity: 0.5;
     }
 
     .loading-state, .empty-state {
@@ -877,28 +825,27 @@
     }
 
     .terminal-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
+        font-size: 48px;
+        margin-bottom: 16px;
         color: var(--neon-blue);
-        text-shadow: 0 0 10px var(--neon-blue);
     }
 
     .empty-state h3 {
-        color: var(--neon-pink);
-        margin: 0 0 10px 0;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        color: var(--text-primary);
+        margin: 0 0 12px 0;
+        font-weight: 600;
     }
 
     .empty-state p {
         margin: 0;
         opacity: 0.8;
+        font-size: 15px;
     }
 
     .worklogs-list {
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 16px;
     }
 
     .worklog-item {
@@ -906,67 +853,59 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: 20px;
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
         padding: 20px;
-        border: 1px solid var(--neon-blue);
-        transition: all 0.3s ease;
+        border: 1px solid var(--glass-border);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
     }
 
     .worklog-item:hover {
-        background: rgba(5, 5, 8, 0.9);
-        transform: translateY(-2px);
-        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
-    }
-
-    .worklog-item::before {
-        content: '>';
-        position: absolute;
-        left: 5px;
-        top: 20px;
-        color: var(--neon-blue);
-        opacity: 0.5;
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
     }
 
     .worklog-main {
         flex: 1;
         min-width: 0;
-        padding-left: 15px;
     }
 
     .worklog-time {
         color: var(--text-secondary);
-        font-size: 0.8rem;
+        font-size: 14px;
         margin-bottom: 8px;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .worklog-title {
         color: var(--text-primary);
-        margin: 0 0 10px 0;
-        font-size: 1.1rem;
+        margin: 0 0 12px 0;
+        font-size: 18px;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         flex-wrap: wrap;
+        font-weight: 500;
     }
 
     .jira-badge {
         background: rgba(0, 82, 204, 0.7);
         color: white;
-        padding: 2px 6px;
-        border-radius: 0;
-        font-size: 0.7rem;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .worklog-desc {
         color: var(--text-secondary);
         margin: 0;
-        font-size: 0.9rem;
+        font-size: 15px;
         line-height: 1.5;
     }
 
@@ -974,19 +913,21 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 15px;
+        gap: 16px;
         flex-shrink: 0;
     }
 
     .worklog-duration {
-        background: rgba(0, 255, 252, 0.1);
+        background: rgba(0, 212, 255, 0.15);
         color: var(--neon-blue);
-        padding: 6px 12px;
-        border-radius: 0;
-        font-weight: bold;
-        font-size: 0.9rem;
+        padding: 8px 14px;
+        border-radius: 16px;
+        font-weight: 500;
+        font-size: 14px;
         white-space: nowrap;
-        border: 1px solid var(--neon-blue);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .worklog-actions {
@@ -999,26 +940,26 @@
         background: rgba(0, 82, 204, 0.7);
         color: white;
         border: none;
-        padding: 6px 12px;
-        border-radius: 0;
-        font-size: 0.8rem;
+        padding: 8px 14px;
+        border-radius: 16px;
+        font-size: 14px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         white-space: nowrap;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
     }
 
     .jira-btn:hover:not(:disabled) {
-        background: rgba(0, 61, 153, 0.7);
-        transform: scale(1.05);
+        background: rgba(0, 82, 204, 0.8);
+        transform: translateY(-2px);
     }
 
     .jira-btn:disabled {
-        background: #ccc;
+        background: rgba(255, 255, 255, 0.1);
         cursor: not-allowed;
         transform: none;
     }
@@ -1028,15 +969,21 @@
         border: none;
         color: var(--accent-error);
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 20px;
         opacity: 0.7;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         padding: 4px;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .delete-btn:hover {
         opacity: 1;
-        transform: scale(1.1);
+        background: rgba(255, 69, 58, 0.1);
     }
 
     /* Modal Styles */
@@ -1046,23 +993,25 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.7);
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 2000;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .modal-content {
-        background: rgba(5, 5, 8, 0.95);
-        border-radius: 0;
-        padding: 30px;
+        background: rgba(30, 30, 30, 0.95);
+        border-radius: 24px;
+        padding: 32px;
         max-width: 500px;
         width: 90%;
-        border: 1px solid var(--neon-pink);
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(40px) saturate(1.8);
+        -webkit-backdrop-filter: blur(40px) saturate(1.8);
     }
 
     .config-form {
@@ -1079,86 +1028,87 @@
 
     .form-group label {
         color: var(--text-primary);
-        font-weight: bold;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .config-input {
         width: 100%;
-        padding: 12px 15px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
+        border-radius: 16px;
+        font-size: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-sizing: border-box;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .config-input:focus {
         outline: none;
-        border-color: var(--neon-pink);
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .config-actions {
         display: flex;
-        gap: 15px;
+        gap: 16px;
         justify-content: flex-end;
-        margin-top: 10px;
+        margin-top: 16px;
     }
 
     .cancel-btn {
-        padding: 10px 20px;
+        padding: 12px 20px;
         background: transparent;
-        border: 1px solid var(--neon-blue);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
+        border-radius: 16px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 15px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .cancel-btn:hover {
-        background: rgba(0, 255, 252, 0.1);
+        background: rgba(255, 255, 255, 0.08);
     }
 
     .save-btn {
-        padding: 10px 20px;
-        background: transparent;
-        color: var(--neon-pink);
-        border: 1px solid var(--neon-pink);
-        border-radius: 0;
+        padding: 12px 20px;
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--neon-purple);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 16px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: bold;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 500;
+        font-size: 15px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .save-btn:hover {
-        background: rgba(255, 0, 255, 0.1);
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        background: rgba(139, 92, 246, 0.2);
+        transform: translateY(-2px);
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
         .worklogs-container {
-            padding: 15px;
+            padding: 20px 16px;
         }
 
         .worklogs-header {
             flex-direction: column;
             align-items: stretch;
-            gap: 15px;
+            gap: 16px;
         }
 
         .header-actions {
@@ -1171,7 +1121,7 @@
 
         .worklog-item {
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
 
         .worklog-meta {
@@ -1183,7 +1133,7 @@
 
         .duration-row {
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
 
         .add-btn {
@@ -1192,8 +1142,8 @@
         }
 
         .modal-content {
-            padding: 20px;
-            margin: 20px;
+            padding: 24px;
+            margin: 16px;
         }
 
         .config-actions {
@@ -1207,15 +1157,11 @@
 
     @media (max-width: 480px) {
         .worklog-title {
-            font-size: 1rem;
+            font-size: 16px;
         }
 
         .stat-card {
             min-width: unset;
-        }
-
-        .suggestions-dropdown {
-            max-height: 150px;
         }
     }
 </style>

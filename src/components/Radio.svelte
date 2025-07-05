@@ -39,40 +39,39 @@
     .radio-container {
         max-width: 900px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 24px 20px;
     }
 
     .radio-header {
         text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 1px solid var(--neon-blue);
-        padding-bottom: 20px;
+        margin-bottom: 32px;
     }
 
     h2 {
-        color: var(--neon-pink);
-        margin: 0 0 10px 0;
-        font-size: 1.5rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+        color: var(--text-primary);
+        margin: 0 0 12px 0;
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
     }
 
     .subtitle {
         color: var(--text-secondary);
         margin: 0;
-        font-style: italic;
+        font-size: 15px;
     }
 
     .radio-player {
         width: 100%;
         height: 300px;
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
         overflow: hidden;
-        border: 1px solid var(--neon-blue);
-        margin-bottom: 30px;
-        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
+        border: 1px solid var(--glass-border);
+        margin-bottom: 32px;
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
     }
 
     .radio-player iframe {
@@ -82,53 +81,57 @@
     }
 
     .radio-stations {
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
-        padding: 25px;
-        border: 1px solid var(--neon-blue);
-        box-shadow: 0 0 15px rgba(0, 255, 252, 0.1);
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 28px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
     }
 
     .radio-stations h3 {
-        color: var(--neon-pink);
+        color: var(--text-primary);
         margin-top: 0;
-        margin-bottom: 20px;
-        font-size: 1.2rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        margin-bottom: 24px;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
 
     .stations-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
+        gap: 16px;
     }
 
     .station-btn {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 15px;
-        background: rgba(5, 5, 8, 0.9);
-        border: 1px solid var(--neon-blue);
+        gap: 16px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
+        border-radius: 16px;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .station-btn:hover {
-        background: rgba(0, 255, 252, 0.1);
-        transform: translateY(-3px);
-        box-shadow: 0 0 10px rgba(0, 255, 252, 0.2);
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
     }
 
     .station-btn.active {
-        border-color: var(--neon-pink);
-        color: var(--neon-pink);
-        box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        background: rgba(0, 212, 255, 0.15);
+        border-color: rgba(0, 212, 255, 0.3);
+        color: var(--neon-blue);
     }
 
     .station-btn.active::before {
@@ -137,22 +140,25 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 2px;
-        background: var(--neon-pink);
+        height: 3px;
+        background: var(--neon-blue);
     }
 
     .station-icon {
-        font-size: 1.5rem;
+        font-size: 24px;
         color: var(--neon-blue);
+        opacity: 0.8;
     }
 
     .station-btn.active .station-icon {
-        color: var(--neon-pink);
+        color: var(--neon-blue);
+        opacity: 1;
     }
 
     .station-name {
         font-weight: 500;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 15px;
     }
 
     @media (max-width: 768px) {

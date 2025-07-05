@@ -13,13 +13,20 @@
         workTime: 25,
         shortBreak: 5,
         longBreak: 15,
-        autoStart: false
+        autoStart: true
     };
+
+    let currentWorkTitle = '';
 
     $: timerState.set(state);
 
     function startTimer() {
         if (state.isActive) return;
+
+        if (state.isWork && !currentWorkTitle.trim()) {
+            currentWorkTitle = 'Pomodoro Work Session';
+        }
+
         state.isActive = true;
         state = { ...state };
         timer = setInterval(updateTimer, 1000);
@@ -39,6 +46,8 @@
         state.isWork = true;
         state.minutes = state.workTime;
         state.seconds = 0;
+        state.cycles = 0;
+        currentWorkTitle = '';
         state = { ...state };
     }
 
@@ -47,6 +56,7 @@
             if (state.minutes === 0) {
                 // Timer completed
                 handleTimerComplete();
+                return;
             } else {
                 state.minutes--;
                 state.seconds = 59;
@@ -58,24 +68,30 @@
     }
 
     async function handleTimerComplete() {
+        stopTimer(); // Stop the timer first
+
         if (state.isWork) {
             // Work session completed
-            await createWorklog();
-            state.isWork = false;
+            try {
+                await createWorklog();
+            } catch (err) {
+                console.error('Error creating worklog:', err);
+                showError('Failed to save work session');
+            }
+
             state.cycles++;
+            state.isWork = false;
 
             // Determine break type
             const isLongBreak = state.cycles % 4 === 0;
             state.minutes = isLongBreak ? state.longBreak : state.shortBreak;
             state.seconds = 0;
 
-            showNotification(`🎉 Work session complete! Time for a ${isLongBreak ? 'long' : 'short'} break.`);
+            showNotification(`Work session complete! Time for a ${isLongBreak ? 'long' : 'short'} break.`);
 
             if (state.autoStart) {
-                // Continue with break
-                state = { ...state };
-            } else {
-                stopTimer();
+                // Auto-start break
+                startTimer();
             }
         } else {
             // Break completed
@@ -86,44 +102,50 @@
             showNotification('☕ Break time over! Ready for another work session?');
 
             if (state.autoStart) {
-                // Continue with work
-                state = { ...state };
-            } else {
-                stopTimer();
+                // Don't auto-start work session, let user set title
+                currentWorkTitle = ''; // Reset title for new work session
             }
         }
+
+        state = { ...state };
     }
 
     async function createWorklog() {
-        try {
-            const user = await getCurrentUser();
-            if (!user) return;
+        const user = await getCurrentUser();
+        if (!user) return;
 
-            const now = new Date();
-            const start = new Date(now);
-            start.setMinutes(start.getMinutes() - state.workTime);
+        const now = new Date();
+        const start = new Date(now);
+        start.setMinutes(start.getMinutes() - state.workTime);
 
-            const { error } = await supabase.from('worklogs').insert({
-                user_id: user.id,
-                title: 'Pomodoro Work Session',
-                description: `Completed ${state.workTime} minute focused work session`,
-                start_time: start.toISOString(),
-                end_time: now.toISOString(),
-                duration: state.workTime * 60,
-                date: now.toISOString().split('T')[0]
-            });
+        const workTitle = currentWorkTitle.trim() || 'Pomodoro Work Session';
 
-            if (error) throw error;
-        } catch (err) {
-            console.error('Error creating worklog:', err);
-            showError('Failed to save work session');
-        }
+        const { error } = await supabase.from('worklogs').insert({
+            user_id: user.id,
+            title: workTitle,
+            description: `Completed ${state.workTime} minute focused work session`,
+            start_time: start.toISOString(),
+            end_time: now.toISOString(),
+            duration: state.workTime * 60,
+            date: now.toISOString().split('T')[0]
+        });
+
+        if (error) throw error;
     }
 
     function updateSettings() {
-        if (!state.isActive) {
-            resetTimer();
+        stopTimer(); // Always stop timer when changing settings
+
+        // Update current timer values based on session type
+        if (state.isWork) {
+            state.minutes = state.workTime;
+        } else {
+            const isLongBreak = state.cycles % 4 === 0;
+            state.minutes = isLongBreak ? state.longBreak : state.shortBreak;
         }
+
+        state.seconds = 0;
+        state = { ...state };
     }
 
     function formatTime(minutes, seconds) {
@@ -139,7 +161,7 @@
                 state.workTime = settings.workTime || 25;
                 state.shortBreak = settings.shortBreak || 5;
                 state.longBreak = settings.longBreak || 15;
-                state.autoStart = settings.autoStart || false;
+                state.autoStart = settings.autoStart !== undefined ? settings.autoStart : true;
                 state.minutes = state.workTime;
                 state = { ...state };
             } catch (err) {
@@ -149,9 +171,7 @@
     });
 
     onDestroy(() => {
-        if (timer) {
-            clearInterval(timer);
-        }
+        stopTimer(); // Use stopTimer instead of direct clearInterval
 
         // Save settings
         try {
@@ -181,6 +201,20 @@
                 {/if}
             </div>
         </div>
+
+        {#if state.isWork}
+            <div class="work-title-section">
+                <label class="title-label">What are you working on?</label>
+                <input
+                        type="text"
+                        bind:value={currentWorkTitle}
+                        placeholder="e.g., Writing,Coding,Studying..."
+                        class="work-title-input"
+                        maxlength="100"
+                        disabled={state.isActive}
+                />
+            </div>
+        {/if}
 
         <div class="timer-controls">
             <button on:click={startTimer} disabled={state.isActive} class="control-btn">
@@ -234,6 +268,7 @@
                         min="1"
                         max="30"
                         class="setting-input"
+                        on:input={updateSettings}
                         disabled={state.isActive}
                 >
             </label>
@@ -248,21 +283,27 @@
                         min="1"
                         max="60"
                         class="setting-input"
+                        on:input={updateSettings}
                         disabled={state.isActive}
                 >
             </label>
         </div>
 
-        <label class="setting-switch">
-            <input
-                    type="checkbox"
-                    bind:checked={state.autoStart}
-                    class="switch-input"
-                    disabled={state.isActive}
-            >
-            <span class="slider"></span>
-            <span class="switch-label">Auto-brew next session</span>
-        </label>
+        <div class="setting-group">
+            <label class="setting-label">
+                <span>Auto-start breaks</span>
+                <label class="switch">
+                    <input
+                            type="checkbox"
+                            bind:checked={state.autoStart}
+                            class="switch-input"
+                            disabled={state.isActive}
+                    >
+                    <span class="slider"></span>
+                </label>
+            </label>
+        </div>
+
     </div>
 </div>
 
@@ -270,105 +311,138 @@
     .pomodoro-container {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 16px;
         max-width: 900px;
         margin: 0 auto;
+        padding: 8px;
     }
 
     .timer-section {
-        background: var(--panel-bg);
-        backdrop-filter: blur(10px);
-        border-radius: 0;
-        padding: 30px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
+        border-radius: 16px;
+        padding: 16px;
         text-align: center;
-        border: 1px solid var(--neon-blue);
-        box-shadow: 0 0 15px rgba(0, 255, 252, 0.2);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
         position: relative;
         overflow: hidden;
     }
 
-    .timer-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink), var(--neon-purple));
-    }
-
     .timer-display {
-        font-size: 4.5rem;
-        font-weight: bold;
-        font-family: 'Courier New', monospace;
-        color: var(--neon-blue);
-        margin: 20px 0;
+        font-size: 3.5rem;
+        font-weight: 300;
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        color: var(--text-primary);
+        margin: 4px 0;
         position: relative;
-        text-shadow: 0 0 10px var(--neon-blue);
+        letter-spacing: -0.02em;
+        line-height: 1;
     }
 
     .timer-status {
-        margin: 20px 0;
+        margin: 6px 0;
     }
 
     .status-badge {
         padding: 8px 16px;
-        border-radius: 0;
-        font-weight: bold;
-        font-size: 1.1rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        border-radius: 16px;
+        font-weight: 500;
+        font-size: 13px;
         display: inline-block;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .status-badge.work {
-        background: rgba(0, 255, 252, 0.1);
+        background: rgba(0, 212, 255, 0.15);
         color: var(--neon-blue);
-        border: 1px solid var(--neon-blue);
-        box-shadow: 0 0 10px rgba(0, 255, 252, 0.3);
+        border: 1px solid rgba(0, 212, 255, 0.3);
     }
 
     .status-badge.break {
-        background: rgba(188, 19, 254, 0.1);
-        color: var(--neon-pink);
-        border: 1px solid var(--neon-pink);
-        box-shadow: 0 0 10px rgba(188, 19, 254, 0.3);
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--neon-purple);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .work-title-section {
+        margin: 8px 35px;
+        text-align: left;
+    }
+
+    .title-label {
+        display: block;
+        color: var(--text-primary);
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 6px;
+    }
+
+    .work-title-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+        font-size: 15px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .work-title-input:focus {
+        outline: none;
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+    }
+
+    .work-title-input::placeholder {
+        color: var(--text-secondary);
+    }
+
+    .work-title-input:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
     }
 
     .timer-controls {
         display: flex;
-        gap: 15px;
+        gap: 12px;
         justify-content: center;
-        margin: 30px 0;
+        margin: 12px 0;
         flex-wrap: wrap;
     }
 
     .control-btn {
-        padding: 12px 24px;
-        border: 1px solid var(--neon-blue);
-        border-radius: 0;
-        font-size: 1rem;
-        font-weight: bold;
+        padding: 12px 20px;
+        border: 1px solid var(--glass-border);
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 500;
         cursor: pointer;
-        transition: all 0.3s ease;
-        background: transparent;
-        color: var(--neon-blue);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text-primary);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         position: relative;
         overflow: hidden;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .control-btn:hover:not(:disabled) {
-        background: rgba(0, 255, 252, 0.1);
-        text-shadow: 0 0 5px var(--neon-blue);
-        box-shadow: 0 0 10px var(--neon-blue);
+        background: rgba(255, 255, 255, 0.12);
         transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        border-color: rgba(255, 255, 255, 0.25);
     }
 
     .control-btn:disabled {
-        border-color: var(--text-secondary);
+        border-color: rgba(255, 255, 255, 0.05);
         color: var(--text-secondary);
         cursor: not-allowed;
         opacity: 0.5;
@@ -376,52 +450,45 @@
 
     .cycles-counter {
         color: var(--text-secondary);
-        font-size: 0.9rem;
-        letter-spacing: 1px;
+        font-size: 13px;
+        font-weight: 400;
+        margin-top: 8px;
     }
 
-    .binary-grid {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
+    .coffee-beans {
+        margin: 6px 0;
     }
 
-    .binary-digit {
-        font-size: 1rem;
-        color: var(--neon-blue);
-        text-shadow: 0 0 5px var(--neon-blue);
-        animation: blink 2s infinite;
+    .bean {
+        margin: 0 2px;
     }
 
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
+    .bean-count {
+        margin-left: 4px;
     }
 
     .settings-section {
-        background: var(--panel-bg);
-        backdrop-filter: blur(10px);
-        border-radius: 0;
-        padding: 25px;
-        border: 1px solid var(--neon-purple);
-        box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
     }
 
     h3 {
-        color: var(--neon-pink);
+        color: var(--text-primary);
         margin-top: 0;
-        margin-bottom: 25px;
-        font-size: 1.3rem;
+        margin-bottom: 12px;
+        font-size: 18px;
         text-align: center;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
 
     .setting-group {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .setting-label {
@@ -430,90 +497,160 @@
         align-items: center;
         color: var(--text-primary);
         margin-bottom: 8px;
-        font-size: 0.9rem;
+        font-size: 13px;
+        font-weight: 500;
     }
 
     .setting-input {
-        width: 80px;
+        width: 70px;
         padding: 8px 12px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
+        border-radius: 10px;
         text-align: center;
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .setting-input:focus {
+        outline: none;
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .setting-input:disabled {
         opacity: 0.5;
     }
 
-    .setting-switch {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 30px;
-        cursor: pointer;
-    }
-
-    .switch-input {
-        display: none;
-    }
-
-    .slider {
-        width: 50px;
-        height: 24px;
-        background: rgba(5, 5, 8, 0.8);
-        border: 1px solid var(--neon-blue);
-        border-radius: 0;
+    .setting-group .switch {
         position: relative;
-        transition: 0.3s;
+        display: inline-block;
+        width: 70px;
+        height: 26px;
     }
 
-    .slider:before {
-        content: "";
+    .setting-group .switch-input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .setting-group .slider {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .setting-group .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
         left: 2px;
-        top: 2px;
+        bottom: 2px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .setting-group .switch-input:checked + .slider {
+        background: rgba(0, 212, 255, 0.3);
+        border-color: var(--neon-blue);
+    }
+
+    .setting-group .switch-input:checked + .slider:before {
+        transform: translateX(22px);
         background: var(--neon-blue);
-        transition: 0.3s;
     }
 
-    .switch-input:checked + .slider:before {
-        transform: translateX(26px);
-        background: var(--neon-pink);
+    .setting-group .switch-input:disabled + .slider {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
-    .switch-label {
+
+    .setting-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         color: var(--text-primary);
-        font-size: 0.9rem;
+        margin-bottom: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        width: 100%;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 400px) {
+        .pomodoro-container {
+            gap: 12px;
+            padding: 6px;
+        }
+
         .timer-display {
-            font-size: 3rem;
+            font-size: 2.5rem;
+        }
+
+        .timer-section, .settings-section {
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            font-size: 12px;
         }
 
         .timer-controls {
-            flex-direction: column;
-            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
         }
 
         .control-btn {
-            width: 100%;
-            max-width: 250px;
+            padding: 10px 16px;
+            font-size: 13px;
+            border-radius: 12px;
+        }
+
+        .setting-group {
+            margin-bottom: 12px;
         }
 
         .setting-label {
             flex-direction: column;
             align-items: flex-start;
-            gap: 5px;
+            gap: 6px;
         }
 
         .setting-input {
             width: 100%;
+            padding: 6px 10px;
+        }
+
+        .slider {
+            width: 44px;
+            height: 24px;
+        }
+
+        .slider:before {
+            width: 20px;
+            height: 20px;
+        }
+
+        .switch-input:checked + .slider:before {
+            transform: translateX(20px);
         }
     }
 </style>

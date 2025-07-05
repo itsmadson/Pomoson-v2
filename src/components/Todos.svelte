@@ -241,95 +241,92 @@
     .todos-container {
         max-width: 800px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 24px 20px;
     }
 
     .todos-header {
-        margin-bottom: 30px;
-        border-bottom: 1px solid var(--neon-blue);
-        padding-bottom: 20px;
+        margin-bottom: 32px;
     }
 
     h2 {
-        color: var(--neon-pink);
-        margin: 0 0 15px 0;
-        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin: 0 0 16px 0;
+        font-size: 28px;
         display: flex;
         align-items: center;
-        gap: 10px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+        gap: 12px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
     }
 
     .tabs {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         margin-top: 20px;
         flex-wrap: wrap;
     }
 
     .tabs button {
-        padding: 8px 16px;
-        background: rgba(5, 5, 8, 0.7);
-        border: 1px solid var(--neon-blue);
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
         color: var(--text-primary);
-        border-radius: 0;
-        font-size: 0.8rem;
+        border-radius: 16px;
+        font-size: 14px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .tabs button:hover {
-        background: rgba(0, 255, 252, 0.1);
-        color: var(--neon-blue);
+        background: rgba(255, 255, 255, 0.12);
     }
 
     .tabs button.active {
-        background: rgba(0, 255, 252, 0.2);
+        background: rgba(0, 212, 255, 0.15);
         color: var(--neon-blue);
-        border-color: var(--neon-blue);
-        font-weight: bold;
+        border-color: rgba(0, 212, 255, 0.3);
     }
 
     .add-todo {
-        margin-bottom: 30px;
+        margin-bottom: 32px;
     }
 
     .input-container {
         display: flex;
         align-items: center;
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
-        padding: 5px 15px;
-        border: 1px solid var(--neon-blue);
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 8px 16px;
+        border: 1px solid var(--glass-border);
         position: relative;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
-    .input-container::before {
-        content: '>';
-        position: absolute;
-        left: 8px;
-        color: var(--neon-blue);
-        opacity: 0.5;
+    .input-container:focus-within {
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
     .icon {
-        margin-right: 10px;
+        margin-right: 12px;
         color: var(--neon-blue);
+        opacity: 0.8;
     }
 
     .todo-input {
         flex: 1;
-        padding: 12px 0 12px 20px;
+        padding: 12px 0;
         background: transparent;
         border: none;
         color: var(--text-primary);
-        font-size: 1rem;
-        font-family: 'Courier New', monospace;
+        font-size: 16px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .todo-input::placeholder {
@@ -342,72 +339,74 @@
     }
 
     .add-btn {
-        padding: 8px 16px;
-        background: transparent;
+        padding: 10px 20px;
+        background: rgba(0, 212, 255, 0.15);
         color: var(--neon-blue);
-        border: 1px solid var(--neon-blue);
-        border-radius: 0;
-        font-weight: bold;
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        border-radius: 16px;
+        font-weight: 500;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-family: 'Courier New', monospace;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 15px;
+        margin-left: 12px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .add-btn:hover:not(:disabled) {
-        background: rgba(0, 255, 252, 0.1);
-        text-shadow: 0 0 5px var(--neon-blue);
-        box-shadow: 0 0 10px var(--neon-blue);
+        background: rgba(0, 212, 255, 0.2);
+        transform: translateY(-2px);
     }
 
     .add-btn:disabled {
-        border-color: var(--text-secondary);
+        border-color: rgba(255, 255, 255, 0.05);
         color: var(--text-secondary);
         cursor: not-allowed;
+        opacity: 0.5;
     }
 
     .char-counter {
         text-align: right;
-        font-size: 0.8rem;
+        font-size: 13px;
         color: var(--text-secondary);
-        margin-top: 5px;
+        margin-top: 8px;
     }
 
     .loading-state {
         text-align: center;
-        padding: 40px;
+        padding: 60px 20px;
         color: var(--neon-blue);
     }
 
     .terminal-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
-        animation: blink 2s infinite;
+        font-size: 48px;
+        margin-bottom: 16px;
+        animation: pulse 2s infinite;
     }
 
     .empty-state {
         text-align: center;
-        padding: 40px;
+        padding: 60px 20px;
         color: var(--text-secondary);
     }
 
     .empty-icon {
-        font-size: 3rem;
-        margin-bottom: 15px;
+        font-size: 48px;
+        margin-bottom: 16px;
         color: var(--neon-blue);
         opacity: 0.7;
     }
 
     .empty-state h3 {
-        color: var(--neon-pink);
-        margin: 0 0 10px 0;
-        text-transform: uppercase;
-        letter-spacing: 2px;
+        color: var(--text-primary);
+        margin: 0 0 12px 0;
+        font-weight: 600;
     }
 
     .empty-state p {
         margin: 0;
+        font-size: 15px;
     }
 
     .todos-list {
@@ -419,33 +418,34 @@
     .todo-item {
         display: flex;
         align-items: center;
-        gap: 15px;
-        padding: 15px;
-        background: rgba(5, 5, 8, 0.7);
-        border-radius: 0;
-        border: 1px solid var(--neon-blue);
-        transition: all 0.3s ease;
+        gap: 16px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
     }
 
     .todo-item:hover {
-        background: rgba(5, 5, 8, 0.9);
-        transform: translateY(-2px);
-        box-shadow: 0 0 10px rgba(0, 255, 252, 0.2);
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
     }
 
     .todo-item.completed {
         opacity: 0.6;
-        border-color: var(--text-secondary);
+        border-color: rgba(255, 255, 255, 0.05);
     }
 
     .todo-checkbox {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
         flex: 1;
         cursor: pointer;
-        position: relative;
     }
 
     .checkbox {
@@ -458,25 +458,29 @@
 
     .checkmark {
         position: relative;
-        height: 20px;
-        width: 20px;
-        background: rgba(5, 5, 8, 0.8);
-        border: 1px solid var(--neon-blue);
-        transition: all 0.3s ease;
+        height: 24px;
+        width: 24px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 
     .checkbox:checked ~ .checkmark {
         background: var(--neon-blue);
+        border-color: var(--neon-blue);
     }
 
     .checkmark:after {
         content: "";
         position: absolute;
         display: none;
-        left: 6px;
-        top: 2px;
-        width: 5px;
-        height: 10px;
+        left: 8px;
+        top: 4px;
+        width: 6px;
+        height: 12px;
         border: solid var(--dark-bg);
         border-width: 0 2px 2px 0;
         transform: rotate(45deg);
@@ -489,7 +493,8 @@
     .todo-text {
         flex: 1;
         color: var(--text-primary);
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 16px;
     }
 
     .todo-item.completed .todo-text {
@@ -499,28 +504,29 @@
 
     .todo-meta {
         display: flex;
-        gap: 15px;
+        gap: 16px;
         align-items: center;
-        font-size: 0.8rem;
+        font-size: 14px;
         color: var(--text-secondary);
-        font-family: 'Courier New', monospace;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .pomodoro-btn {
-        background: rgba(0, 255, 252, 0.1);
-        border: 1px solid var(--neon-blue);
+        background: rgba(0, 212, 255, 0.15);
+        border: 1px solid rgba(0, 212, 255, 0.3);
         color: var(--neon-blue);
-        border-radius: 0;
-        padding: 4px 8px;
-        font-size: 0.8rem;
+        border-radius: 16px;
+        padding: 6px 12px;
+        font-size: 14px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 500;
+        white-space: nowrap;
     }
 
     .pomodoro-btn:hover {
-        background: rgba(0, 255, 252, 0.2);
+        background: rgba(0, 212, 255, 0.2);
     }
 
     .delete-btn {
@@ -528,21 +534,27 @@
         border: none;
         color: var(--accent-error);
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 20px;
         opacity: 0.7;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .delete-btn:hover {
         opacity: 1;
-        transform: scale(1.1);
+        background: rgba(255, 69, 58, 0.1);
     }
 
     @media (max-width: 768px) {
         .todo-item {
             flex-direction: column;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
         }
 
         .todo-meta {
