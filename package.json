@@ -1,6 +1,6 @@
 {
   "name": "pomoson",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Pomodoro timer with todo list and work logging",
   "main": "public/electron.js",
   "type": "commonjs",

@@ -245,7 +245,7 @@
                 {/each}
 
                 <button on:click={handleSignOut} class="nav-btn sign-out-btn" title="Sign Out">
-                    <span class="nav-icon">⏻</span>
+                    <span class="nav-icon">✖</span>
                     <span>Sign Out</span>
                 </button>
             </div>
