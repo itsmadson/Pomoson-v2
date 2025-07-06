@@ -62,9 +62,8 @@
 
 <div class="auth-container">
     <div class="auth-card">
-        <div class="coffee-icon">☕</div>
         <h1>Pomoson</h1>
-        <p class="subtitle">{isLogin ? 'Sign in to your coffee-powered productivity' : 'Brew a new account'}</p>
+        <p class="subtitle">{isLogin ? 'Log in to begin.' : 'Create account'}</p>
 
         <div class="form-group">
             <label class="input-label">
@@ -106,7 +105,7 @@
                     <span></span>
                 </span>
             {:else}
-                {isLogin ? 'Brew My Session' : 'Create Account'}
+                {isLogin ? 'Let’s Brew' : 'Create Account'}
             {/if}
         </button>
 
@@ -115,7 +114,7 @@
                 class="toggle-button"
                 disabled={isLoading}
         >
-            {isLogin ? 'Need a fresh cup? Sign up' : 'Already have a brew? Sign in'}
+            {isLogin ? 'New here? Sign up' : 'Already brewed one? Sign in'}
         </button>
     </div>
 </div>

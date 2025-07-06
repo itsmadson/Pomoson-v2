@@ -1,9 +1,4 @@
 <div class="radio-container">
-    <div class="radio-header">
-        <h2>🎵 Coffee Radio</h2>
-        <p class="subtitle">Stay focused with some relaxing tunes</p>
-    </div>
-
     <div class="radio-player">
         <iframe
                 title="Live radio"

@@ -3,6 +3,7 @@ node_modules/
 
 # Ignore public build output
 public/build/
+dist/
 
 # Ignore specific Supabase config file
 src/lib/supabase.js

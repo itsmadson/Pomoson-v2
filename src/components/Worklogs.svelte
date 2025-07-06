@@ -10,6 +10,14 @@
     let newWorklog = { title: '', description: '', duration: 30 };
     let isAddingWorklog = false;
 
+    let dateInputRef;
+
+    function openCalendar() {
+        if (dateInputRef && dateInputRef.showPicker) {
+            dateInputRef.showPicker();
+        }
+    }
+
     // Edit worklog state
     let editingWorklog = null;
     let editWorklog = { title: '', description: '', duration: 30 };
@@ -534,13 +542,14 @@
 
 <div class="worklogs-container">
     <div class="worklogs-header">
-        <h2>📊 Coffee Logs</h2>
         <div class="header-actions">
-            <div class="date-selector">
+            <div class="date-input-wrapper" on:click={openCalendar}>
+                <span class="calendar-icon">📅</span>
                 <input
                         type="date"
                         bind:value={selectedDate}
                         class="date-input"
+                        bind:this={dateInputRef}
                         max={new Date().toISOString().split('T')[0]}
                 >
             </div>
@@ -568,7 +577,7 @@
     </div>
 
     <div class="add-worklog">
-        <h3>➕ Add Manual Entry</h3>
+        <h3>＋ Add Manual Entry</h3>
         <div class="add-form">
             <div class="title-input-container">
                 <input
@@ -730,13 +739,6 @@
                                 {formatDuration(log.duration)}
                             </div>
                             <div class="worklog-actions">
-                                <button
-                                        on:click={() => startEditWorklog(log)}
-                                        class="edit-btn"
-                                        title="Edit worklog"
-                                >
-                                    ✏️
-                                </button>
                                 {#if looksLikeIssueKey(log.title) && isJiraConfigured()}
                                     <button
                                             on:click={() => pushToJira(log)}
@@ -746,6 +748,13 @@
                                         {pushingToJira[log.id] ? '⏳' : '🚀'} Jira
                                     </button>
                                 {/if}
+                                <button
+                                        on:click={() => startEditWorklog(log)}
+                                        class="edit-btn"
+                                        title="Edit worklog"
+                                >
+                                    ✏️
+                                </button>
                                 <button on:click={() => deleteWorklog(log.id)} class="delete-btn">
                                     🗑️
                                 </button>
@@ -768,7 +777,7 @@
                     <label>Jira Base URL</label>
                     <input
                             bind:value={jiraConfig.baseUrl}
-                            placeholder="https://jira.hq.saafaa.ir"
+                            placeholder="https://jira.com"
                             class="config-input"
                             type="url"
                     >
@@ -798,16 +807,16 @@
 
 <style>
     .worklogs-container {
-        max-width: 900px;
+        max-width: 800px;
         margin: 0 auto;
-        padding: 24px 20px;
+        padding: 0px 20px;
     }
 
     .worklogs-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 32px;
+        margin-bottom: 10px;
         flex-wrap: wrap;
         gap: 16px;
     }
@@ -827,25 +836,77 @@
         flex-wrap: wrap;
     }
 
-    .date-input {
-        padding: 12px 16px;
+    .date-selector {
+        position: relative;
+        display: inline-block;
+    }
+
+    .date-input-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid var(--glass-border);
-        color: var(--text-primary);
         border-radius: 16px;
-        font-size: 14px;
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        padding: 5px 16px;
+        cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
+        gap: 8px;
     }
 
-    .date-input:focus {
-        outline: none;
+    .date-input-wrapper:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .date-input-wrapper:focus-within {
         border-color: var(--neon-blue);
         box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
 
+    .calendar-icon {
+        color: white;
+        font-size: 18px;
+        pointer-events: none;
+        flex-shrink: 0;
+    }
+
+    .date-input {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 14px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        outline: none;
+        flex: 1;
+        cursor: pointer;
+        min-width: 0;
+        color-scheme: dark;
+    }
+
+    .date-input::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        filter: invert(1);
+    }
+
+
+    .date-input::-webkit-datetime-edit-text {
+        color: var(--text-secondary);
+    }
+
+    .date-input::-webkit-datetime-edit-month-field,
+    .date-input::-webkit-datetime-edit-day-field,
+    .date-input::-webkit-datetime-edit-year-field {
+        color: var(--text-primary);
+    }
     .config-btn {
         padding: 12px 16px;
         background: rgba(255, 255, 255, 0.08);
@@ -877,7 +938,7 @@
     .stats-cards {
         display: flex;
         gap: 16px;
-        margin-bottom: 32px;
+        margin-bottom: 20px;
         flex-wrap: wrap;
     }
 
@@ -990,14 +1051,12 @@
 
     .duration-row {
         display: flex;
-        align-items: flex-end;
         gap: 16px;
         flex-wrap: wrap;
     }
 
     .duration-input {
         flex: 1;
-        min-width: 200px;
     }
 
     .duration-input label {

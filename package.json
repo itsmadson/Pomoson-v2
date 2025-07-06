@@ -21,7 +21,10 @@
     "electron",
     "svelte"
   ],
-  "author": "Madson",
+  "author": {
+    "name": "Madson",
+    "email": "sadegh.eghtesadi2005@gmail.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.0",
@@ -50,9 +53,11 @@
       "output": "dist"
     },
     "files": [
-      "public/**/*",
-      "node_modules/**/*",
-      "!public/build"
+      "public/index.html",
+      "public/build/**/*",
+      "public/electron.js",
+      "public/preload.js",
+      "node_modules/**/*"
     ],
     "extraResources": [
       {
@@ -64,10 +69,15 @@
       "category": "public.app-category.productivity"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public/pomoson2.ico"
     },
     "linux": {
-      "target": "AppImage"
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "icon": "public/pomoson2.png"
     }
   }
 }

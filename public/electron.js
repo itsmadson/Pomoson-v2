@@ -31,8 +31,8 @@ function createWindow() {
   })
 
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 900,
+    width: 420,
+    height: 700,
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
@@ -41,6 +41,7 @@ function createWindow() {
       webSecurity: !process.env.ROLLUP_WATCH,
       preload: path.join(__dirname, 'preload.js'),
     },
+    icon: __dirname + './pomoson2.ico',
   })
 
   const startUrl = process.env.ROLLUP_WATCH

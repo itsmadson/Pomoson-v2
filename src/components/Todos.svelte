@@ -157,23 +157,22 @@
 
 <div class="todos-container">
     <div class="todos-header">
-        <h2>📝 Coffee Tasks</h2>
         <div class="tabs">
             <button class:active={filter === 'all'} on:click={() => filter = 'all'}>
-                All Beans ({todos.length})
+                All Tasks ({todos.length})
             </button>
             <button class:active={filter === 'active'} on:click={() => filter = 'active'}>
-                Brewing ({todos.filter(t => !t.completed).length})
+                Active ({todos.filter(t => !t.completed).length})
             </button>
             <button class:active={filter === 'completed'} on:click={() => filter = 'completed'}>
-                Enjoyed ({todos.filter(t => t.completed).length})
+                Completed ({todos.filter(t => t.completed).length})
             </button>
         </div>
     </div>
 
     <div class="add-todo">
         <div class="input-container">
-            <span class="icon">➕</span>
+            <span class="icon">＋</span>
             <input
                     bind:value={newTodo}
                     placeholder="Add a new task..."
@@ -221,11 +220,9 @@
 
                     <div class="todo-meta">
                         <span class="todo-date">📅 {formatDate(todo.created_at)}</span>
-                        {#if todo.pomodoro_count > 0}
-                            <button on:click={() => incrementPomodoro(todo)} class="pomodoro-btn">
-                                🍅 ×{todo.pomodoro_count}
-                            </button>
-                        {/if}
+                        <button on:click={() => incrementPomodoro(todo)} class="pomodoro-btn">
+                            🍅 {todo.pomodoro_count > 0 ? `×${todo.pomodoro_count}` : 'Add'}
+                        </button>
                     </div>
 
                     <button on:click={() => deleteTodo(todo.id)} class="delete-btn">
@@ -241,11 +238,11 @@
     .todos-container {
         max-width: 800px;
         margin: 0 auto;
-        padding: 24px 20px;
+        padding: 0px 20px;
     }
 
     .todos-header {
-        margin-bottom: 32px;
+        margin-bottom: 10px;
     }
 
     h2 {
@@ -314,7 +311,8 @@
     }
 
     .icon {
-        margin-right: 12px;
+        font-size: 25px;
+        margin-right: 8px;
         color: var(--neon-blue);
         opacity: 0.8;
     }
@@ -563,7 +561,7 @@
         }
 
         .delete-btn {
-            align-self: flex-end;
+            align-self: flex-start;
         }
     }
 </style>

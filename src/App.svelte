@@ -141,10 +141,10 @@
     notification.subscribe(value => notificationMessage = value);
 
     const tabs = [
-        { id: 'pomodoro', label: 'Pomodoro', icon: '🍅', component: Pomodoro },
-        { id: 'todos', label: 'Tasks', icon: '✅', component: Todos },
-        { id: 'worklogs', label: 'Logs', icon: '📊', component: Worklogs },
-        { id: 'radio', label: 'Radio', icon: '🎵', component: Radio }
+        { id: 'pomodoro', label: 'Pomodoro', icon: '⧖', component: Pomodoro },
+        { id: 'todos', label: 'Tasks', icon: '✓', component: Todos },
+        { id: 'worklogs', label: 'WorkLogs', icon: '≣', component: Worklogs },
+        { id: 'radio', label: 'Radio', icon: '♫', component: Radio }
     ];
 
     async function handleSignOut() {
@@ -245,7 +245,7 @@
                 {/each}
 
                 <button on:click={handleSignOut} class="nav-btn sign-out-btn" title="Sign Out">
-                    <span class="nav-icon">👋</span>
+                    <span class="nav-icon">⏻</span>
                     <span>Sign Out</span>
                 </button>
             </div>
