@@ -1,5 +1,5 @@
 # Pomoson
-**Pomoson**is a productivity app designed to help you manage your tasks and work sessions efficiently using the Pomodoro technique.
+**Pomoson** is a productivity app designed to help you manage your tasks and work sessions efficiently using the Pomodoro technique.
 ![hedear](https://github.com/user-attachments/assets/4282b22a-9c91-46e8-9c37-2ce40764baf7)
 
 ---
