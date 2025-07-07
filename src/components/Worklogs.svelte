@@ -667,7 +667,7 @@
                                     {#if isEditSearching}
                                         <div class="search-indicator">🔍</div>
                                     {/if}
-                                    {#if showEditSuggestions && editSearchSuggestions.length > 0}
+                                        {#if showEditSuggestions && editSearchSuggestions.length > 0}
                                         <div class="suggestions-dropdown">
                                             {#each editSearchSuggestions as suggestion}
                                                 <div
@@ -1026,6 +1026,7 @@
         color: var(--text-primary);
         border-radius: 16px;
         font-size: 15px;
+        padding-right: 40px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         box-sizing: border-box;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -1047,6 +1048,62 @@
     .worklog-textarea {
         min-height: 100px;
         resize: vertical;
+    }
+
+    .title-input-container {
+        position: relative;
+        width: 100%;
+    }
+
+    .suggestions-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(30, 30, 30, 0.95);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        margin-top: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 100;
+        backdrop-filter: blur(20px) saturate(1.8);
+        -webkit-backdrop-filter: blur(20px) saturate(1.8);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .suggestion-item {
+        padding: 12px 16px;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        margin: 4px;
+        padding: 8px 12px;
+    }
+
+    .suggestion-item strong {
+        color: var(--neon-blue);
+        font-weight: 500;
+    }
+
+    .search-indicator {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-secondary);
+        pointer-events: none;
     }
 
     .duration-row {
