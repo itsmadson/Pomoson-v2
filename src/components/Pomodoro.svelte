@@ -43,6 +43,43 @@
         }
     }
 
+    // Function to convert non-English digits to English
+    function convertToEnglishNumbers(str) {
+        if (!str) return '';
+
+        // Persian/Farsi digits
+        const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        // Arabic digits
+        const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        // Hindi/Devanagari digits (just in case)
+        const hindiDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+
+        let result = str.toString();
+
+        // Convert all non-English digits to English
+        for (let i = 0; i < 10; i++) {
+            const persianRegex = new RegExp(persianDigits[i], 'g');
+            const arabicRegex = new RegExp(arabicDigits[i], 'g');
+            const hindiRegex = new RegExp(hindiDigits[i], 'g');
+
+            result = result.replace(persianRegex, i);
+            result = result.replace(arabicRegex, i);
+            result = result.replace(hindiRegex, i);
+        }
+
+        return result;
+    }
+
+    // Function to validate and convert input values
+    function validateAndConvertNumber(value, min, max) {
+        const converted = convertToEnglishNumbers(value);
+        const num = parseInt(converted);
+        if (isNaN(num) || num < min || num > max) {
+            return null;
+        }
+        return num;
+    }
+
     let timer;
     let visibilityTimer; // Additional timer for visibility check
     let state = {
@@ -326,8 +363,12 @@
         if (error) throw error;
     }
 
+    // FIXED: Better settings update that properly handles timer state
     function updateSettings() {
-        stopTimer(); // Always stop timer when changing settings
+        // Only stop timer if it's currently active
+        if (state.isActive) {
+            stopTimer();
+        }
 
         // Update current timer values based on session type
         if (state.isWork) {
@@ -339,7 +380,56 @@
 
         state.seconds = 0;
         state = { ...state };
-        saveTimerState();
+
+        // Only save if we're not in the middle of a session
+        if (!state.isActive) {
+            saveTimerState();
+        }
+    }
+
+    function handleWorkTimeChange(event) {
+        const rawValue = event.target.value;
+        const englishValue = convertToEnglishNumbers(rawValue);
+        const converted = validateAndConvertNumber(englishValue, 1, 60);
+
+        if (converted !== null) {
+            state.workTime = converted;
+            event.target.value = converted; // Set the English number back to the input
+            updateSettings();
+        } else {
+            // Reset to previous valid value
+            event.target.value = state.workTime;
+        }
+    }
+
+    function handleShortBreakChange(event) {
+        const rawValue = event.target.value;
+        const englishValue = convertToEnglishNumbers(rawValue);
+        const converted = validateAndConvertNumber(englishValue, 1, 30);
+
+        if (converted !== null) {
+            state.shortBreak = converted;
+            event.target.value = converted; // Set the English number back to the input
+            updateSettings();
+        } else {
+            // Reset to previous valid value
+            event.target.value = state.shortBreak;
+        }
+    }
+
+    function handleLongBreakChange(event) {
+        const rawValue = event.target.value;
+        const englishValue = convertToEnglishNumbers(rawValue);
+        const converted = validateAndConvertNumber(englishValue, 1, 60);
+
+        if (converted !== null) {
+            state.longBreak = converted;
+            event.target.value = converted; // Set the English number back to the input
+            updateSettings();
+        } else {
+            // Reset to previous valid value
+            event.target.value = state.longBreak;
+        }
     }
 
     function formatTime(minutes, seconds) {
@@ -490,12 +580,12 @@
             <label class="setting-label">
                 <span>☕ Work Duration (min)</span>
                 <input
-                        type="number"
-                        bind:value={state.workTime}
+                        type="text"
+                        value={state.workTime}
                         min="1"
                         max="60"
                         class="setting-input"
-                        on:input={updateSettings}
+                        on:change={handleWorkTimeChange}
                         disabled={state.isActive}
                 >
             </label>
@@ -505,12 +595,12 @@
             <label class="setting-label">
                 <span>🍃 Short Break (min)</span>
                 <input
-                        type="number"
-                        bind:value={state.shortBreak}
+                        type="text"
+                        value={state.shortBreak}
                         min="1"
                         max="30"
                         class="setting-input"
-                        on:input={updateSettings}
+                        on:change={handleShortBreakChange}
                         disabled={state.isActive}
                 >
             </label>
@@ -520,12 +610,12 @@
             <label class="setting-label">
                 <span>🌿 Long Break (min)</span>
                 <input
-                        type="number"
-                        bind:value={state.longBreak}
+                        type="text"
+                        value={state.longBreak}
                         min="1"
                         max="60"
                         class="setting-input"
-                        on:input={updateSettings}
+                        on:change={handleLongBreakChange}
                         disabled={state.isActive}
                 >
             </label>
@@ -773,6 +863,7 @@
     }
 
     .setting-input {
+        direction:ltr;
         width: 70px;
         padding: 8px 12px;
         background: rgba(255, 255, 255, 0.08);
@@ -799,7 +890,7 @@
     .setting-group .switch {
         position: relative;
         display: inline-block;
-        width: 70px;
+        width: 52px;  /* Changed from 70px to 52px for better proportion */
         height: 26px;
     }
 
@@ -843,13 +934,8 @@
     }
 
     .setting-group .switch-input:checked + .slider:before {
-        transform: translateX(22px);
+        transform: translateX(26px);  /* Changed from 22px to 26px */
         background: var(--neon-blue);
-    }
-
-    .setting-group .switch-input:disabled + .slider {
-        opacity: 0.5;
-        cursor: not-allowed;
     }
 
     /* Custom Select Styles */
