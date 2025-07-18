@@ -27,6 +27,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@rollup/plugin-terser": "^0.4.0",
@@ -43,6 +44,10 @@
     "wait-on": "^7.0.1"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2",
+    "@capacitor/splash-screen": "^7.0.1",
     "@supabase/supabase-js": "^2.38.0",
     "svelte-select": "^5.8.3"
   },

@@ -221,10 +221,6 @@
     <!-- Loading State -->
     {#if isLoading}
         <div class="loading-screen">
-            <div class="loading-content">
-                <h1>🍅 Pomoson</h1>
-                <p>⏳ Loading...</p>
-            </div>
         </div>
     {:else if !currentSession}
         <Auth/>
@@ -412,13 +408,13 @@
 
     @keyframes moveBackground {
         0% {
-            transform: scale(2.2) rotate(0deg);
+            transform: scale(2.5) rotate(0deg);
         }
         50% {
-            transform: scale(2.2) rotate(180deg);
+            transform: scale(2.5) rotate(180deg);
         }
         100% {
-            transform: scale(2.2) rotate(360deg);
+            transform: scale(2.5) rotate(360deg);
         }
     }
 

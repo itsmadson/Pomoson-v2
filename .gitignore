@@ -10,3 +10,12 @@ src/lib/supabase.js
 
 # Ignore package lock file
 package-lock.json
+
+# Capacitor
+.temp/
+android/
+build-tools/
+icons/
+licenses/
+platform-tools/
+platforms/

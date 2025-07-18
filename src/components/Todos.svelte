@@ -186,7 +186,7 @@
                     class="add-btn"
                     disabled={isAddingTodo || !newTodo.trim()}
             >
-                {isAddingTodo ? 'Brewing...' : 'Add'}
+                {isAddingTodo ? '...' : 'Add'}
             </button>
         </div>
         <div class="char-counter">{newTodo.length}/500</div>
