@@ -4,6 +4,16 @@
 
 ---
 
+## 📦 Downloads
+
+| Platform | File | Download |
+|----------|------|----------|
+| 🐧 Linux (Debian/Ubuntu) | `.deb` Package | [Download `pomoson_2.0.0_amd64.deb`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/pomoson_2.0.0_amd64.deb) |
+| 🪟 Windows | `.exe` Installer | [Download `Pomoson-Setup.exe`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/Pomoson-Setup.exe) |
+| 🤖 Android | `.apk` File | [Download `app-release-signed.apk`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/app-release-signed.apk) |
+
+---
+
 ## 🚀 Features
 
 - ⏲️ **Pomodoro Timer**  
@@ -45,14 +55,6 @@ Choose from a variety of modern themes:
 - 🔐 All your data is stored securely in **Supabase**.
 - ⚙️ **Jira configuration** (URL + PAT) stays 100% **local**. It's never uploaded or shared.
 
----
-
-## 📦 Downloads
-
-| Platform | File | Download |
-|----------|------|----------|
-| 🐧 Linux (Debian/Ubuntu) | `.deb` Package | [Download `pomoson_2.0.0_amd64.deb`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/pomoson_2.0.0_amd64.deb) |
-| 🪟 Windows | `.exe` Installer | [Download `Pomoson-Setup.exe`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/Pomoson-Setup.exe) |
 
 ---
 
