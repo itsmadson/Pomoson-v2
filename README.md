@@ -53,6 +53,8 @@ Choose from a variety of modern themes:
 |----------|------|----------|
 | 🐧 Linux (Debian/Ubuntu) | `.deb` Package | [Download `pomoson_2.0.0_amd64.deb`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/pomoson_2.0.0_amd64.deb) |
 | 🪟 Windows | `.exe` Installer | [Download `Pomoson-Setup.exe`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/Pomoson-Setup.exe) |
+| 📱 Android | `.apk` Installer | [Download `app-release-signed.apk`](https://github.com/itsmadson/Pomoson-v2/releases/download/2.0.0/app-release-signed.apk) |
+| 📱 IOS (PWA) | `pwa` Installer | [PWA `link`](https://itsmadson.github.io/Pomoson-v2/) |
 
 ---
 
