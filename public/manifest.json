@@ -1,0 +1,18 @@
+{
+  "name": "Pomoson - Pomodoro Timer",
+  "short_name": "Pomoson",
+  "description": "Productivity app with Pomodoro timer, todo list, and worklogs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#ff6b6b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "pomoson2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

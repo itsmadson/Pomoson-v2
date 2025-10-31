@@ -3,6 +3,20 @@
 <head>
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- iOS Specific Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pomoson">
+
+  <!-- iOS Splash Screens and Icons -->
+  <link rel="apple-touch-icon" href="pomoson2.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="pomoson2.png">
+
+  <!-- Theme color for iOS Safari -->
+  <meta name="theme-color" content="#ff6b6b">
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' 'unsafe-eval' http://localhost:35729;
@@ -28,4 +42,17 @@ color: white;
 background: black;
 }
 </style>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+              .then((registration) => {
+                console.log('SW registered:', registration);
+              })
+              .catch((error) => {
+                console.log('SW registration failed:', error);
+              });
+    });
+  }
+</script>
 </html>
